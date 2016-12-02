@@ -1,13 +1,8 @@
 package com.olegdavidovichdev.cinematogo.service;
 
-import android.app.Notification;
-import android.app.NotificationManager;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.NotificationCompat;
 import android.util.Log;
-import android.view.View;
 import android.widget.Toast;
 
 import com.google.android.gms.gcm.GcmNetworkManager;
@@ -15,13 +10,9 @@ import com.google.android.gms.gcm.GcmTaskService;
 import com.google.android.gms.gcm.PeriodicTask;
 import com.google.android.gms.gcm.Task;
 import com.google.android.gms.gcm.TaskParams;
-import com.olegdavidovichdev.cinematogo.App;
-import com.olegdavidovichdev.cinematogo.R;
-import com.olegdavidovichdev.cinematogo.activity.FilmDetailActivity;
 import com.olegdavidovichdev.cinematogo.model.ConfigurationResponse;
 import com.olegdavidovichdev.cinematogo.rest.ApiClient;
 import com.olegdavidovichdev.cinematogo.rest.ApiInterface;
-import com.squareup.picasso.Picasso;
 
 import retrofit2.Call;
 import retrofit2.Callback;

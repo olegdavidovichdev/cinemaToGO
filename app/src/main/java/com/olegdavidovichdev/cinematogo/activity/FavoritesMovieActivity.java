@@ -1,24 +1,27 @@
 package com.olegdavidovichdev.cinematogo.activity;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.olegdavidovichdev.cinematogo.R;
 import com.olegdavidovichdev.cinematogo.adapter.FavoritesMovieAdapter;
 import com.olegdavidovichdev.cinematogo.db.FavoritesMovieDB;
+import com.olegdavidovichdev.cinematogo.service.NotificationReceiver;
 
-import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -48,6 +51,43 @@ public class FavoritesMovieActivity extends AppCompatActivity {
 
         listFavFilm.setAdapter(adapter);
 
+        listFavFilm.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                final FavoritesMovieDB m = FavoritesMovieDB.findById(FavoritesMovieDB.class, position + 1);
+
+                String[] items = getResources().getStringArray(R.array.click_fav_movie);
+                ArrayAdapter<String> adapter = new ArrayAdapter<String>(FavoritesMovieActivity.this, R.layout.click_fav_movie, items);
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(FavoritesMovieActivity.this);
+                builder.setTitle("Notify, if the movie will be released on the screen?");
+                builder.setAdapter(adapter, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        switch (which) {
+                            case 0:
+
+                                Calendar now = Calendar.getInstance();
+
+                                now.add(Calendar.SECOND, 15);
+
+                                Intent intent = new Intent(getBaseContext(), NotificationReceiver.class);
+                                intent.putExtra("film_name", m.getName());
+                                intent.putExtra("film_release", m.getRelease());
+                                intent.putExtra("film_poster", m.getPoster());
+
+                                PendingIntent pendingIntent = PendingIntent.getBroadcast(getBaseContext(),
+                                        1, intent, 0);
+
+                                AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
+                                am.set(AlarmManager.RTC_WAKEUP, now.getTimeInMillis(), pendingIntent);
+                        }
+                    }
+                });
+                builder.create().show();
+            }
+        });
     }
 
     private void setToolbar() {

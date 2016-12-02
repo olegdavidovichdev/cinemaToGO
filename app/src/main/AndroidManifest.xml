@@ -4,6 +4,7 @@
     android:installLocation="internalOnly">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <application
         android:name=".App"
@@ -39,6 +40,12 @@
                 <action android:name="com.google.android.gms.gcm.ACTION_TASK_READY" />
             </intent-filter>
         </service>
+
+        <receiver android:name=".service.NotificationReceiver" android:exported="false" >
+            <intent-filter>
+                <action android:name="NOTIFICATION_SERVICE" />
+            </intent-filter>
+        </receiver>
 
         <activity android:name=".activity.SettingsActivity"></activity>
     </application>

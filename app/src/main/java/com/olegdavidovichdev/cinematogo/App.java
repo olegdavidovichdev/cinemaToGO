@@ -1,14 +1,11 @@
 package com.olegdavidovichdev.cinematogo;
 
 import android.app.Application;
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.google.android.gms.gcm.GcmNetworkManager;
-import com.google.android.gms.gcm.PeriodicTask;
 import com.olegdavidovichdev.cinematogo.model.ConfigurationResponse;
 import com.olegdavidovichdev.cinematogo.rest.ApiClient;
 import com.olegdavidovichdev.cinematogo.rest.ApiInterface;

@@ -1,10 +1,8 @@
 package com.olegdavidovichdev.cinematogo.activity;
 
-import android.app.Fragment;
+import android.os.Bundle;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
 

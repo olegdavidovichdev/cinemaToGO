@@ -76,4 +76,9 @@
     <string name="dialog_delete_all">Are you sure you want to delete all movies from Favorites?</string>
     <string name="yes">Yes</string>
     <string name="cancel">Cancel</string>
+
+    <string-array name="click_fav_movie">
+        <item>Notify</item>
+        <item>Do not Notify</item>
+    </string-array>
 </resources>

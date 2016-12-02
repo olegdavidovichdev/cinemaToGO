@@ -8,22 +8,16 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.olegdavidovichdev.cinematogo.App;
 import com.olegdavidovichdev.cinematogo.R;
-import com.olegdavidovichdev.cinematogo.activity.FavoritesMovieActivity;
 import com.olegdavidovichdev.cinematogo.db.FavoritesMovieDB;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**

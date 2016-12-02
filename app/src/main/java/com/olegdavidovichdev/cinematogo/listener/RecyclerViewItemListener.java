@@ -1,26 +1,18 @@
 package com.olegdavidovichdev.cinematogo.listener;
 
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.provider.Contacts;
 import android.support.design.widget.Snackbar;
-import android.support.design.widget.TabLayout;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
-import android.view.animation.TranslateAnimation;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
 import com.olegdavidovichdev.cinematogo.R;
 import com.olegdavidovichdev.cinematogo.activity.FilmDetailActivity;
-import com.olegdavidovichdev.cinematogo.activity.MainActivity;
 import com.olegdavidovichdev.cinematogo.db.FavoritesMovieDB;
 import com.olegdavidovichdev.cinematogo.model.Movie;
-import com.orm.SugarContext;
 
 import java.util.List;
 

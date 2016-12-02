@@ -3,7 +3,6 @@ package com.olegdavidovichdev.cinematogo.activity;
 import android.app.ProgressDialog;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -13,12 +12,10 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.olegdavidovichdev.cinematogo.App;
 import com.olegdavidovichdev.cinematogo.R;
 import com.olegdavidovichdev.cinematogo.model.Movie;
 import com.olegdavidovichdev.cinematogo.rest.ApiClient;
 import com.olegdavidovichdev.cinematogo.rest.ApiInterface;
-import com.olegdavidovichdev.cinematogo.service.CheckConfigurationService;
 import com.squareup.picasso.Picasso;
 
 import retrofit2.Call;
