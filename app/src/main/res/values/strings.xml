@@ -1,0 +1,79 @@
+<resources>
+    <string name="app_name">CinemaToGO</string>
+
+    <string name="film_detail_runtime">Runtime :</string>
+    <string name="film_detail_budget">Budget :</string>
+    <string name="minutes">minutes</string>
+    <string name="unknown"> Unknown</string>
+    <string name="dollar">$</string>
+
+    <string name="menu_settings">Settings</string>
+    <string name="title_activity_settings">Settings</string>
+
+    <!-- PREF LANGUAGE -->
+    <string name="pref_language_title">Language</string>
+    <string name="pref_language_subtitle">Choose a language</string>
+    <string-array name="pref_language_entries">
+        <item>English</item>
+        <item>Русский</item>
+    </string-array>
+    <string-array name="pref_language_entry_values">
+        <item>en</item>
+        <item>ru</item>
+    </string-array>
+
+    <!-- PREF SYNC -->
+    <string name="pref_sync_title">Sync</string>
+    <string name="pref_sync_subtitle">Choose a time when app sync with API</string>
+    <string-array name="pref_sync_entries">
+        <item>3 hour</item>
+        <item>6 hour</item>
+        <item>12 hour</item>
+        <item>24 hour</item>
+        <item>48 hour</item>
+    </string-array>
+    <string-array name="pref_sync_entry_values">
+        <item>10800</item>
+        <item>21600</item>
+        <item>43200</item>
+        <item>86400</item>
+        <item>172800</item>
+    </string-array>
+
+    <!-- PREF NOTIF -->
+    <string name="pref_notif_title">Push-notification</string>
+    <string name="pref_notif_subtitle">Notify user when API configuration updated</string>
+
+    <!-- PREF POSTER SIZE -->
+    <string name="pref_poster_size_title">Posters</string>
+    <string name="pref_poster_size_subtitle">Choose preferred size of posters</string>
+    <string-array name="pref_poster_size_entries">
+        <item>Small</item>
+        <item>Medium</item>
+        <item>Large</item>
+    </string-array>
+    <string-array name="pref_poster_size_entry_values">
+        <item>w342</item>
+        <item>w500</item>
+        <item>w780</item>
+    </string-array>
+
+    <!-- PREF CATEGORY -->
+    <string name="pref_category_synchronization">Synchronization</string>
+    <string name="pref_category_general">General</string>
+
+    <!-- LONG CLICK DIALOG -->
+    <string-array name="long_click_dialog_items">
+        <item>Add to Favorites</item>
+    </string-array>
+
+    <string name="added_to_favorites">Added to Favorites</string>
+    <string name="menu_favorites">Favorites</string>
+    <string name="downloading_data">Downloading data…</string>
+    <string name="fav_activity_name">Favorites</string>
+    <string name="same_film">This films is already added in Favorites</string>
+    <string name="delete_all">Delete all</string>
+    <string name="dialog_delete_all">Are you sure you want to delete all movies from Favorites?</string>
+    <string name="yes">Yes</string>
+    <string name="cancel">Cancel</string>
+</resources>

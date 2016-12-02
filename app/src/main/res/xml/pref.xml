@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory
+        android:title="@string/pref_category_general" >
+
+        <ListPreference
+            android:key="language"
+            android:title="@string/pref_language_title"
+            android:summary="@string/pref_language_subtitle"
+            android:entries="@array/pref_language_entries"
+            android:entryValues="@array/pref_language_entry_values"/>
+
+        <ListPreference
+            android:key="posterSize"
+            android:title="@string/pref_poster_size_title"
+            android:summary="@string/pref_poster_size_subtitle"
+            android:entries="@array/pref_poster_size_entries"
+            android:entryValues="@array/pref_poster_size_entry_values" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/pref_category_synchronization"
+        android:enabled="true">
+
+        <ListPreference
+            android:key="sync"
+            android:title="@string/pref_sync_title"
+            android:summary="@string/pref_sync_subtitle"
+            android:entries="@array/pref_sync_entries"
+            android:entryValues="@array/pref_sync_entry_values" />
+
+        <SwitchPreference
+            android:key="notif"
+            android:title="@string/pref_notif_title"
+            android:summary="@string/pref_notif_subtitle" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>
