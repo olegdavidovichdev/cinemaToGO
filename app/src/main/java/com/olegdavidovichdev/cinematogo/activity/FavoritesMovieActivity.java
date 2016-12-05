@@ -9,6 +9,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,7 +23,9 @@ import com.olegdavidovichdev.cinematogo.db.FavoritesMovieDB;
 import com.olegdavidovichdev.cinematogo.service.NotificationReceiver;
 
 import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Created by Oleg on 29.11.2016.
@@ -35,6 +38,8 @@ public class FavoritesMovieActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private static FavoritesMovieAdapter adapter;
     private List<FavoritesMovieDB> movieList;
+
+    private static int counter = 0;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -67,21 +72,36 @@ public class FavoritesMovieActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         switch (which) {
                             case 0:
+                                counter++;
+                                Log.d(TAG, "counter = " + counter);
 
-                                Calendar now = Calendar.getInstance();
+                               /* Calendar now = Calendar.getInstance();
+                                now.add(Calendar.SECOND, 15);*/
+                                String release = m.getRelease();
 
-                                now.add(Calendar.SECOND, 15);
+                                int targetYear = Integer.parseInt(release.substring(0, 4));
+                                int targetMonth = Integer.parseInt(release.substring(5, 7));
+                                int targetDay = Integer.parseInt(release.substring(8, 10));
+                                int targetHour = new Random().nextInt(15 - 9) + 9;
+                                int targetMinute = new Random().nextInt(60);
+
+                                Calendar targetDate = new GregorianCalendar(targetYear, targetMonth - 1,
+                                        targetDay, targetHour, targetMinute);
+
+
+                                Log.d(TAG, targetDate.toString());
 
                                 Intent intent = new Intent(getBaseContext(), NotificationReceiver.class);
                                 intent.putExtra("film_name", m.getName());
                                 intent.putExtra("film_release", m.getRelease());
                                 intent.putExtra("film_poster", m.getPoster());
+                                intent.putExtra("notification_id", counter);
 
                                 PendingIntent pendingIntent = PendingIntent.getBroadcast(getBaseContext(),
-                                        1, intent, 0);
+                                        counter, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
                                 AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
-                                am.set(AlarmManager.RTC_WAKEUP, now.getTimeInMillis(), pendingIntent);
+                                am.set(AlarmManager.RTC_WAKEUP, targetDate.getTimeInMillis(), pendingIntent);
                         }
                     }
                 });

@@ -87,4 +87,8 @@
     <string name="tooltip_popularity">Film popularity</string>
     <string name="tooltip_budget">Film budget</string>
     <string name="tooltip_adult">Adult: if true - film is for adults only, if false - film for everyone</string>
+
+
+    <string name="notif_ticker">Your favorite film is out now!</string>
+    <string name="notif_content_text">Film out on the screen today!</string>
 </resources>
