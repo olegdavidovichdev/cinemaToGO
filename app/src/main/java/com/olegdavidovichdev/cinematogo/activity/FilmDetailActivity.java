@@ -13,11 +13,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.olegdavidovichdev.cinematogo.R;
+import com.olegdavidovichdev.cinematogo.Tooltips;
 import com.olegdavidovichdev.cinematogo.model.Movie;
 import com.olegdavidovichdev.cinematogo.rest.ApiClient;
 import com.olegdavidovichdev.cinematogo.rest.ApiInterface;
 import com.squareup.picasso.Picasso;
 
+import it.sephiroth.android.library.tooltip.Tooltip;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -26,7 +28,7 @@ import retrofit2.Response;
  * Created by Oleg on 27.11.2016.
  */
 
-public class FilmDetailActivity extends AppCompatActivity {
+public class FilmDetailActivity extends AppCompatActivity implements View.OnClickListener{
 
     private static final String TAG = FilmDetailActivity.class.getSimpleName();
     private static final String API_KEY = "e755e32ddf1ac688f8617a68c325d41d";
@@ -52,6 +54,15 @@ public class FilmDetailActivity extends AppCompatActivity {
         final ProgressBar posterProgressBar = (ProgressBar) findViewById(R.id.poster_progress_bar);
         posterProgressBar.setVisibility(View.VISIBLE);
 
+        ImageView imgRuntime = (ImageView) findViewById(R.id.img_runtime);
+        ImageView imgPopularity = (ImageView) findViewById(R.id.img_popularity);
+        ImageView imgBudget = (ImageView) findViewById(R.id.img_budget);
+        ImageView imgAdult = (ImageView) findViewById(R.id.img_adult);
+
+        imgRuntime.setOnClickListener(this);
+        imgPopularity.setOnClickListener(this);
+        imgBudget.setOnClickListener(this);
+        imgAdult.setOnClickListener(this);
 
 
         final ProgressDialog pd = new ProgressDialog(this);
@@ -126,8 +137,25 @@ public class FilmDetailActivity extends AppCompatActivity {
         });
     }
 
-
     public static void setPosterSize(String posterSize) {
         FilmDetailActivity.posterSize = posterSize;
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.img_runtime:
+                new Tooltips(v, 1, Tooltip.Gravity.TOP, 2500, getString(R.string.tooltip_runtime));
+                break;
+            case R.id.img_popularity:
+                new Tooltips(v, 2, Tooltip.Gravity.BOTTOM, 2500, getString(R.string.tooltip_popularity));
+                break;
+            case R.id.img_budget:
+                new Tooltips(v, 3, Tooltip.Gravity.TOP, 2500, getString(R.string.tooltip_budget));
+                break;
+            case R.id.img_adult:
+                new Tooltips(v, 4, Tooltip.Gravity.BOTTOM, 4000, getString(R.string.tooltip_adult));
+                break;
+        }
     }
 }

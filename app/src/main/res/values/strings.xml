@@ -81,4 +81,10 @@
         <item>Notify</item>
         <item>Do not Notify</item>
     </string-array>
+
+    <!-- TOOLTIPS -->
+    <string name="tooltip_runtime">Film runtime</string>
+    <string name="tooltip_popularity">Film popularity</string>
+    <string name="tooltip_budget">Film budget</string>
+    <string name="tooltip_adult">Adult: if true - film is for adults only, if false - film for everyone</string>
 </resources>
