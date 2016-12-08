@@ -4,7 +4,6 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.nfc.Tag;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
@@ -17,6 +16,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.olegdavidovichdev.cinematogo.R;
 import com.olegdavidovichdev.cinematogo.adapter.FavoritesMovieAdapter;
@@ -24,9 +24,7 @@ import com.olegdavidovichdev.cinematogo.db.FavoritesMovieDB;
 import com.olegdavidovichdev.cinematogo.service.NotificationReceiver;
 
 import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.Random;
 
 /**
  * Created by Oleg on 29.11.2016.
@@ -61,11 +59,11 @@ public class FavoritesMovieActivity extends AppCompatActivity {
         listFavFilm.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                TextView textView = (TextView) view.findViewById(R.id.fav_film_title);
+                String itemTitle = textView.getText().toString();
 
-
-                final FavoritesMovieDB m = FavoritesMovieDB.findById(FavoritesMovieDB.class, position + 1);
-                Log.d(TAG, "item click listener = " + FavoritesMovieDB.listAll(FavoritesMovieDB.class) + "position + 1 = " + (position + 1));
-              //  Log.d(TAG, "item click listener = " + FavoritesMovieDB.findById(FavoritesMovieDB.class, 2));
+                List<FavoritesMovieDB> list = FavoritesMovieDB.find(FavoritesMovieDB.class, "name = ?", itemTitle);
+                final FavoritesMovieDB m = list.get(0);
 
 
                 String[] items = getResources().getStringArray(R.array.click_fav_movie);
