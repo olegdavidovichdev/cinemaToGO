@@ -107,6 +107,7 @@
             android:id="@+id/overview"
             tools:text="11111111111111111"
             android:textStyle="italic"
+            android:gravity="center_horizontal"
             android:layout_marginTop="@dimen/activity_vertical_margin"
             android:layout_marginBottom="@dimen/activity_vertical_margin"
             android:layout_marginLeft="@dimen/activity_horizontal_margin"

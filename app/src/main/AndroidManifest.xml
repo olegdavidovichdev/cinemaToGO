@@ -8,7 +8,7 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <application
-        android:name=".App"
+        android:name=".CinemaToGoApplication"
         android:allowBackup="true"
         android:icon="@mipmap/launcher"
         android:label="@string/app_name"
@@ -27,6 +27,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity android:name=".activity.FilmDetailActivity"
             android:theme="@style/CinemaToGoStyle.NoStatusBar"/>
 
@@ -48,7 +49,10 @@
             </intent-filter>
         </receiver>
 
-        <activity android:name=".activity.SettingsActivity"></activity>
+        <activity android:name=".activity.SettingsActivity"
+            android:parentActivityName=".activity.MainActivity">
+
+        </activity>
     </application>
 
 </manifest>

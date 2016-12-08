@@ -3,31 +3,29 @@ package com.olegdavidovichdev.cinematogo.activity;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
 
 import com.olegdavidovichdev.cinematogo.R;
 
-public class SettingsActivity extends PreferenceActivity {
+public class SettingsActivity extends AppCompatActivity {
 
-    private AppCompatDelegate appCompatDelegate;
     private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        getDelegate().installViewFactory();
-        getDelegate().onCreate(savedInstanceState);
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.layout_settings);
 
         toolbar = (Toolbar) findViewById(R.id.toolbar_settings);
-        getDelegate().setSupportActionBar(toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("Settings");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
 
-        onCreatePreferencesFragment();
-    }
-
-    private void onCreatePreferencesFragment() {
         getFragmentManager().beginTransaction()
-                .replace(android.R.id.content, new SettingsFragment())
+                .replace(R.id.layout_settings, new SettingsFragment())
                 .commit();
     }
 
@@ -41,10 +39,4 @@ public class SettingsActivity extends PreferenceActivity {
     }
 
 
-    private AppCompatDelegate getDelegate() {
-        if (appCompatDelegate == null) {
-            appCompatDelegate = AppCompatDelegate.create(this, null);
-        }
-        return appCompatDelegate;
-    }
 }

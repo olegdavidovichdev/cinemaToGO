@@ -33,9 +33,16 @@ public class FilmDetailActivity extends AppCompatActivity implements View.OnClic
     private static final String TAG = FilmDetailActivity.class.getSimpleName();
     private static final String API_KEY = "e755e32ddf1ac688f8617a68c325d41d";
 
+    private SharedPreferences sp;
+    private static final String APP_PREFERENCES = "app_preferences";
+    private static final String APP_PREFERENCES_BASE_URL_IMAGES = "baseUrlImages";
+    private String baseUrlImages;
+
+
     private static String posterId;
 
-    private static String posterSize;
+    private static String currentPosterSize;
+    private static String currentLanguage;
 
 
     @Override
@@ -74,12 +81,13 @@ public class FilmDetailActivity extends AppCompatActivity implements View.OnClic
 
         final int id = getIntent().getIntExtra("id", -1);
 
-        SharedPreferences myPrefs = getSharedPreferences("myPrefs", MODE_PRIVATE);
+
+        sp = getSharedPreferences(APP_PREFERENCES, MODE_PRIVATE);
+
+        baseUrlImages = sp.getString(APP_PREFERENCES_BASE_URL_IMAGES, "");
 
 
-        final String currentUrl = myPrefs.getString("baseUrlImages", null);
-        String currentLanguage = MainActivity.getCurrentLanguage();
-        Log.d(TAG, currentUrl + " " + currentLanguage);
+        Log.d(TAG, baseUrlImages + " " + currentLanguage);
 
 
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
@@ -91,10 +99,10 @@ public class FilmDetailActivity extends AppCompatActivity implements View.OnClic
 
                 posterId = response.body().getPosterPath();
 
-                Log.d(TAG, currentUrl + posterSize + posterId);
+                Log.d(TAG, baseUrlImages + currentPosterSize + posterId);
 
                 Picasso.with(FilmDetailActivity.this)
-                        .load(currentUrl + posterSize + posterId)
+                        .load(baseUrlImages + currentPosterSize + posterId)
                         .into(img, new com.squareup.picasso.Callback() {
                             @Override
                             public void onSuccess() {
@@ -123,8 +131,8 @@ public class FilmDetailActivity extends AppCompatActivity implements View.OnClic
                 } else budget.setText(response.body().getBudget() + " " + getResources().getString(R.string.dollar));
 
 
-                popularity.setText(response.body().getPopularity() + "");
-                adult.setText(response.body().getAdult() + " ");
+                popularity.setText(String.format("%s", response.body().getPopularity()));
+                adult.setText(String.format("%s ", response.body().getAdult()));
                 overview.setText(response.body().getOverview());
 
                 pd.hide();
@@ -138,7 +146,11 @@ public class FilmDetailActivity extends AppCompatActivity implements View.OnClic
     }
 
     public static void setPosterSize(String posterSize) {
-        FilmDetailActivity.posterSize = posterSize;
+        FilmDetailActivity.currentPosterSize = posterSize;
+    }
+
+    public static void setLanguage(String language) {
+        FilmDetailActivity.currentLanguage = language;
     }
 
     @Override

@@ -13,9 +13,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.olegdavidovichdev.cinematogo.R;
 import com.olegdavidovichdev.cinematogo.adapter.MoviesAdapter;
+import com.olegdavidovichdev.cinematogo.model.ConfigurationResponse;
 import com.olegdavidovichdev.cinematogo.model.Movie;
 import com.olegdavidovichdev.cinematogo.model.MovieResponse;
 import com.olegdavidovichdev.cinematogo.rest.ApiClient;
@@ -35,15 +37,29 @@ public class MainActivity extends AppCompatActivity {
     private static final String TASK_TAG = "periodicTask";
 
     private SharedPreferences sp;
+    private static final String APP_PREFERENCES = "app_preferences";
+    private static final String APP_PREFERENCES_BASE_URL_IMAGES = "baseUrlImages";
+    private static final String APP_PREFERENCES_BASE_SIZE_POSTER = "baseSizePosters";
+
+    private SharedPreferences spa;
+    private static final String SETTINGS_PREFERENCES_LANGUAGE = "language";
+    private static final String SETTINGS_PREFERENCES_SYNC = "sync";
+    private static final String SETTINGS_PREFERENCES_SOUND_NOTIFICATION = "notif";
+    private static final String SETTINGS_PREFERENCES_POSTER_SIZE = "posterSize";
+
+
+    private static final long DEFAULT_PERIOD = 10800;
+    private static final long DEFAULT_FLEX = 100;
 
     private ProgressBar pb;
-    private Toolbar toolbar;
     private RecyclerView recyclerView;
 
-    private static String language;
+    private String language;
     private String sync;
     private Boolean notif;
     private String posterSize;
+
+    private String baseUrlImages;
 
 
     @Override
@@ -51,19 +67,49 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_main);
 
-
-
-        toolbar = (Toolbar) findViewById(R.id.main_toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.main_toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         recyclerView = (RecyclerView) findViewById(R.id.movies_recycler_view);
 
-        sp = PreferenceManager.getDefaultSharedPreferences(this);
-
         pb = (ProgressBar) findViewById(R.id.progress_bar);
         pb.setIndeterminate(true);
 
+        sp = getSharedPreferences(APP_PREFERENCES, MODE_PRIVATE);
+
+        if (!sp.contains(APP_PREFERENCES_BASE_URL_IMAGES)) {
+
+            ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
+            Call<ConfigurationResponse> checkConfiguration = apiService.getConfiguration(API_KEY);
+            checkConfiguration.enqueue(new Callback<ConfigurationResponse>() {
+                @Override
+                public void onResponse(Call<ConfigurationResponse> call, Response<ConfigurationResponse> response) {
+                    baseUrlImages = response.body().getImages().getBaseUrl();
+
+                    // add to preferences basic image url
+                    SharedPreferences.Editor e = sp.edit();
+                    e.putString(APP_PREFERENCES_BASE_URL_IMAGES, baseUrlImages);
+
+                    e.apply();
+
+                    Log.d(TAG, APP_PREFERENCES +" = " +  sp.getAll().toString());
+
+                    Toast.makeText(getApplicationContext(), "App get new API configuration", Toast.LENGTH_LONG).show();
+                }
+
+                @Override
+                public void onFailure(Call<ConfigurationResponse> call, Throwable t) {
+                    Log.d(TAG, "Fail to download Api configuration");
+                    Toast.makeText(getApplicationContext(), "Fail to download Api configuration", Toast.LENGTH_LONG).show();
+                }
+            });
+
+            CheckConfigurationService.periodicSync(this, DEFAULT_PERIOD, DEFAULT_FLEX, TASK_TAG, false, true);
+
+        }
+        spa = PreferenceManager.getDefaultSharedPreferences(this);
     }
+
 
     @Override
     protected void onResume() {
@@ -72,44 +118,21 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setVisibility(View.INVISIBLE);
         pb.setVisibility(View.VISIBLE);
 
+        if (!spa.contains(SETTINGS_PREFERENCES_LANGUAGE)) {
+            language = "en";
+        } else language = spa.getString(SETTINGS_PREFERENCES_LANGUAGE, null);
+        language = spa.getString("language", null);
+        sync = spa.getString("sync", null);
+        notif = spa.getBoolean("notif", false);
+        if (!spa.contains(SETTINGS_PREFERENCES_POSTER_SIZE)) {
+            posterSize = "w500";
+        } else posterSize = spa.getString(SETTINGS_PREFERENCES_POSTER_SIZE, null);
 
-        String tempSync = "";
-
-       if (sp.getAll().size() == 1) {
-            SharedPreferences.Editor editor = sp.edit();
-            editor.putString("language", "en");
-            editor.putString("sync", "10800");
-            editor.putBoolean("notif", true);
-            editor.putString("posterSize", "w500");
-            editor.commit();
-
-            language = sp.getString("language", null);
-            sync = sp.getString("sync", null);
-            notif = sp.getBoolean("notif", false);
-            posterSize = sp.getString("posterSize", null);
-
-            tempSync = sync;
-
-            Log.d(TAG, "if = " + language + " / " + sync + " / " + notif + " / " + posterSize);
-        }
-        else {
-           language = sp.getString("language", null);
-           sync = sp.getString("sync", null);
-           notif = sp.getBoolean("notif", false);
-           posterSize = sp.getString("posterSize", null);
-           Log.d(TAG, "else = " + language + " / " + sync + " / " + notif + " / " + posterSize);
-
-           if (!tempSync.equals(sync)) {
-               CheckConfigurationService.periodicSync(this, Long.parseLong(sync), Long.parseLong(sync) - 10, TASK_TAG, true, true);
-               if (!notif) CheckConfigurationService.setNotify(false);
-           }
-
-           tempSync = sync;
-        }
-
-        Log.d(TAG, "current = " + sp.getAll().toString());
 
         FilmDetailActivity.setPosterSize(posterSize);
+        FilmDetailActivity.setLanguage(language);
+
+        Log.d(TAG, "current = " + spa.getAll().toString());
 
         final RecyclerView recyclerView = (RecyclerView) findViewById(R.id.movies_recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -163,9 +186,5 @@ public class MainActivity extends AppCompatActivity {
         editor.remove("notif");
         editor.remove("posterSize");
         editor.commit();
-    }
-
-    public static String getCurrentLanguage() {
-        return language;
     }
 }

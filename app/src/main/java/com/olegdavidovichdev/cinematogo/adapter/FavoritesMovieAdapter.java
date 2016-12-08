@@ -27,6 +27,9 @@ import java.util.List;
 public class FavoritesMovieAdapter extends BaseAdapter {
 
     private static final String TAG = FavoritesMovieAdapter.class.getSimpleName();
+    private SharedPreferences sp;
+    private static final String APP_PREFERENCES = "app_preferences";
+    private static final String APP_PREFERENCES_BASE_URL_IMAGES = "baseUrlImages";
 
     private Context ctx;
     private LayoutInflater layoutInflater;
@@ -67,10 +70,11 @@ public class FavoritesMovieAdapter extends BaseAdapter {
         ((TextView) view.findViewById(R.id.fav_film_release)).setText(movie.getRelease());
 
         //
-        SharedPreferences myPrefs = ctx.getSharedPreferences("myPrefs", Context.MODE_PRIVATE);
+
+        sp = ctx.getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
 
 
-        String imageUrl = myPrefs.getString("baseUrlImages", null);
+        String imageUrl = sp.getString(APP_PREFERENCES_BASE_URL_IMAGES, null);
         String size = "w154";
         String posterPath = movie.getPoster();
 
@@ -104,7 +108,7 @@ public class FavoritesMovieAdapter extends BaseAdapter {
                         movie.delete();
                         list.remove(position);
                         FavoritesMovieAdapter.this.notifyDataSetChanged();
-                        Log.i(TAG, FavoritesMovieDB.listAll(FavoritesMovieDB.class) + "");
+                        Log.d(TAG, "adapter: remove item = " + FavoritesMovieDB.listAll(FavoritesMovieDB.class));
                     }
                 });
                 builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {

@@ -4,6 +4,7 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.nfc.Tag;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
@@ -51,6 +52,7 @@ public class FavoritesMovieActivity extends AppCompatActivity {
         ListView listFavFilm = (ListView) findViewById(R.id.list_fav_film);
 
         movieList = FavoritesMovieDB.listAll(FavoritesMovieDB.class);
+        Log.d(TAG, "onCreate:movieList = " + movieList.toString());
 
         adapter = new FavoritesMovieAdapter(this, movieList);
 
@@ -60,7 +62,11 @@ public class FavoritesMovieActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
+
                 final FavoritesMovieDB m = FavoritesMovieDB.findById(FavoritesMovieDB.class, position + 1);
+                Log.d(TAG, "item click listener = " + FavoritesMovieDB.listAll(FavoritesMovieDB.class) + "position + 1 = " + (position + 1));
+              //  Log.d(TAG, "item click listener = " + FavoritesMovieDB.findById(FavoritesMovieDB.class, 2));
+
 
                 String[] items = getResources().getStringArray(R.array.click_fav_movie);
                 ArrayAdapter<String> adapter = new ArrayAdapter<String>(FavoritesMovieActivity.this, R.layout.click_fav_movie, items);
@@ -75,9 +81,9 @@ public class FavoritesMovieActivity extends AppCompatActivity {
                                 counter++;
                                 Log.d(TAG, "counter = " + counter);
 
-                               /* Calendar now = Calendar.getInstance();
-                                now.add(Calendar.SECOND, 15);*/
-                                String release = m.getRelease();
+                                Calendar now = Calendar.getInstance();
+                                now.add(Calendar.SECOND, 15);
+                                /*String release = m.getRelease();
 
                                 int targetYear = Integer.parseInt(release.substring(0, 4));
                                 int targetMonth = Integer.parseInt(release.substring(5, 7));
@@ -89,7 +95,7 @@ public class FavoritesMovieActivity extends AppCompatActivity {
                                         targetDay, targetHour, targetMinute);
 
 
-                                Log.d(TAG, targetDate.toString());
+                                Log.d(TAG, targetDate.toString());*/
 
                                 Intent intent = new Intent(getBaseContext(), NotificationReceiver.class);
                                 intent.putExtra("film_name", m.getName());
@@ -101,7 +107,7 @@ public class FavoritesMovieActivity extends AppCompatActivity {
                                         counter, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
                                 AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
-                                am.set(AlarmManager.RTC_WAKEUP, targetDate.getTimeInMillis(), pendingIntent);
+                                am.set(AlarmManager.RTC_WAKEUP, now.getTimeInMillis(), pendingIntent);
                         }
                     }
                 });
@@ -136,6 +142,7 @@ public class FavoritesMovieActivity extends AppCompatActivity {
                     FavoritesMovieDB.deleteAll(FavoritesMovieDB.class);
                     movieList.clear();
                     adapter.notifyDataSetChanged();
+                    Log.d(TAG, "delete all = " + FavoritesMovieDB.listAll(FavoritesMovieDB.class));
                 }
             });
             builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {

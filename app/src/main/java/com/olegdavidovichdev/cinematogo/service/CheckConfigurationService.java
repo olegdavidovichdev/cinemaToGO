@@ -61,7 +61,7 @@ public class CheckConfigurationService extends GcmTaskService
                 .setTag(tag)
                 .setPeriod(period)
                 .setFlex(flex)
-                .setRequiredNetwork(Task.NETWORK_STATE_CONNECTED)
+                .setRequiredNetwork(Task.NETWORK_STATE_ANY)
                 .setUpdateCurrent(currentUpdate)
                 .setPersisted(true)
                 .build();

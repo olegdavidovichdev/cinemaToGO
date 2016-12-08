@@ -33,6 +33,10 @@ import java.util.concurrent.Future;
 public class NotificationReceiver extends BroadcastReceiver {
 
     private static final String TAG = NotificationReceiver.class.getSimpleName();
+    private SharedPreferences sp;
+    private static final String APP_PREFERENCES = "app_preferences";
+    private static final String APP_PREFERENCES_BASE_URL_IMAGES = "baseUrlImages";
+
     private static String url;
 
 
@@ -44,9 +48,9 @@ public class NotificationReceiver extends BroadcastReceiver {
         String poster = intent.getStringExtra("film_poster");
         int notificationId = intent.getIntExtra("notification_id", 0);
 
-        SharedPreferences s = context.getSharedPreferences("myPrefs", Context.MODE_PRIVATE);
+        sp = context.getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
 
-        String http = s.getString("baseUrlImages", "");
+        String http = sp.getString(APP_PREFERENCES_BASE_URL_IMAGES, "");
 
         url = http + "w500" + poster;
 

@@ -5,7 +5,7 @@
         android:id="@+id/menu_delete_all"
         android:title="@string/delete_all"
         android:icon="@drawable/menu_delete_all"
-        app:showAsAction="always">
+        app:showAsAction="ifRoom">
     </item>
 
 </menu>
