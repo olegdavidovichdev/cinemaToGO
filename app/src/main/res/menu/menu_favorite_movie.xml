@@ -4,7 +4,7 @@
     <item
         android:id="@+id/menu_delete_all"
         android:title="@string/delete_all"
-        android:icon="@drawable/menu_delete_all"
+        android:icon="@mipmap/menu_delete_all"
         app:showAsAction="ifRoom">
     </item>
 

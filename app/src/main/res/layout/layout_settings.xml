@@ -6,7 +6,7 @@
     android:id="@+id/layout_settings">
 
     <include
-        android:id="@+id/toolbar_settings"
-        layout="@layout/toolbar_settings" />
+        android:id="@+id/toolbar"
+        layout="@layout/toolbar_main" />
 
 </LinearLayout>

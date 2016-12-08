@@ -17,6 +17,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.olegdavidovichdev.cinematogo.R;
 import com.olegdavidovichdev.cinematogo.adapter.FavoritesMovieAdapter;
@@ -115,7 +116,7 @@ public class FavoritesMovieActivity extends AppCompatActivity {
     }
 
     private void setToolbar() {
-        toolbar = (Toolbar) findViewById(R.id.fav_toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(R.string.fav_activity_name);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -132,22 +133,28 @@ public class FavoritesMovieActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.menu_delete_all) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(FavoritesMovieActivity.this);
-            builder.setMessage(R.string.dialog_delete_all);
-            builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    FavoritesMovieDB.deleteAll(FavoritesMovieDB.class);
-                    movieList.clear();
-                    adapter.notifyDataSetChanged();
-                    Log.d(TAG, "delete all = " + FavoritesMovieDB.listAll(FavoritesMovieDB.class));
-                }
-            });
-            builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {}
-            });
-            builder.create().show();
+            if (movieList.isEmpty()) {
+                Toast.makeText(getApplicationContext(), "Nothing to delete", Toast.LENGTH_SHORT).show();
+            } else {
+                AlertDialog.Builder builder = new AlertDialog.Builder(FavoritesMovieActivity.this);
+                builder.setMessage(R.string.dialog_delete_all);
+                builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        FavoritesMovieDB.deleteAll(FavoritesMovieDB.class);
+                        movieList.clear();
+                        adapter.notifyDataSetChanged();
+                        Log.d(TAG, "delete all = " + FavoritesMovieDB.listAll(FavoritesMovieDB.class));
+
+                    }
+                });
+                builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {}
+                });
+                builder.create().show();
+            }
         }
         return super.onOptionsItemSelected(item);
     }
