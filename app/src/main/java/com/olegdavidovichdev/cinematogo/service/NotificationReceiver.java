@@ -18,7 +18,6 @@ import com.olegdavidovichdev.cinematogo.network.CheckNetwork;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
@@ -53,6 +52,7 @@ public class NotificationReceiver extends BroadcastReceiver {
             builder.setSmallIcon(android.R.drawable.stat_notify_sync);
             builder.setContentTitle("CinemaToGO");
             builder.setContentText("API configuration was successfully updated");
+            builder.setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.mipmap.launcher));
 
             NotificationManager notificationManager = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
             notificationManager.notify(0, builder.build());

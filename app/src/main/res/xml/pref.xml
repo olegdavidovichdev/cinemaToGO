@@ -34,10 +34,10 @@
             android:summary="@string/pref_sync_subtitle"
             android:entries="@array/pref_sync_entries"
             android:entryValues="@array/pref_sync_entry_values"
-            android:defaultValue="10800"/>
+            android:defaultValue="60"/>
 
         <SwitchPreference
-            android:key="notif"
+            android:key="notification"
             android:title="@string/pref_notif_title"
             android:summary="@string/pref_notif_subtitle"
             android:defaultValue="true"/>

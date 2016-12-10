@@ -1,14 +1,11 @@
 package com.olegdavidovichdev.cinematogo.service;
 
 import android.app.AlarmManager;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.support.v7.app.NotificationCompat;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.google.android.gms.gcm.GcmNetworkManager;
 import com.google.android.gms.gcm.GcmTaskService;
@@ -31,10 +28,15 @@ import retrofit2.Response;
 
 public class CheckConfigurationService extends GcmTaskService
 {
-    private SharedPreferences sp;
+    private SharedPreferences spa;
     private static final String APP_PREFERENCES = "app_preferences";
     private static final String APP_PREFERENCES_BASE_URL_IMAGES = "baseUrlImages";
     private static final String EXTRA_KEY_UPDATE = "update";
+
+    private static final String SETTINGS_PREFERENCES_NOTIFICATION = "notification";
+
+    private static final String DEFAULT_PREFERENCES_NAME = "com.olegdavidovichdev.cinematogo_preferences";
+
     private static boolean notify;
 
     @Override
@@ -51,6 +53,10 @@ public class CheckConfigurationService extends GcmTaskService
                 e.putString(APP_PREFERENCES_BASE_URL_IMAGES, response.body().getImages().getBaseUrl());
                 e.apply();
                 Log.d("MainActivity", "Url is updated = " + sp.getAll().toString());
+                spa = getSharedPreferences(DEFAULT_PREFERENCES_NAME, MODE_PRIVATE);
+                if (spa.contains(SETTINGS_PREFERENCES_NOTIFICATION)) {
+                    notify = spa.getBoolean(SETTINGS_PREFERENCES_NOTIFICATION, false);
+                } else notify = true;
                 if (notify) createNotification();
             }
 
@@ -89,7 +95,6 @@ public class CheckConfigurationService extends GcmTaskService
 
     private void createNotification() {
 
-       // Toast.makeText(getApplicationContext(), "API configuration was successfully updated", Toast.LENGTH_LONG).show();
         Calendar now = Calendar.getInstance();
         Log.d("MainActivity", "createNotification");
         Intent intent = new Intent(this, NotificationReceiver.class);
@@ -99,8 +104,5 @@ public class CheckConfigurationService extends GcmTaskService
 
         AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
         am.set(AlarmManager.RTC_WAKEUP, now.getTimeInMillis(), pi);
-
-
-
     }
 }

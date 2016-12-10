@@ -41,14 +41,12 @@ public class MainActivity extends AppCompatActivity {
     private SharedPreferences sp;
     private static final String APP_PREFERENCES = "app_preferences";
     private static final String APP_PREFERENCES_BASE_URL_IMAGES = "baseUrlImages";
-    private static final String APP_PREFERENCES_BASE_SIZE_POSTER = "baseSizePosters";
 
-    private SharedPreferences spa;
+    private static SharedPreferences spa;
     private static final String SETTINGS_PREFERENCES_LANGUAGE = "language";
-    private static final String SETTINGS_PREFERENCES_SYNC = "sync";
-    private static final String SETTINGS_PREFERENCES_SOUND_NOTIFICATION = "notif";
     private static final String SETTINGS_PREFERENCES_POSTER_SIZE = "posterSize";
-
+    private static final String SETTINGS_PREFERENCES_SYNC = "sync";
+    private static final String SETTINGS_PREFERENCES_NOTIFICATION = "notification";
 
     private static final long DEFAULT_PERIOD = 60;
     private static final long DEFAULT_FLEX = 10;
@@ -58,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
 
     private static String language;
     private static String sync;
-    private static Boolean notif;
+    private static Boolean notification;
     private static String posterSize;
 
     private String baseUrlImages;
@@ -116,7 +114,7 @@ public class MainActivity extends AppCompatActivity {
 
         spa = PreferenceManager.getDefaultSharedPreferences(this);
 
-        final RecyclerView recyclerView = (RecyclerView) findViewById(R.id.movies_recycler_view);
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.movies_recycler_view);
         llm = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(llm);
 
@@ -180,26 +178,27 @@ public class MainActivity extends AppCompatActivity {
             sync = spa.getString(SETTINGS_PREFERENCES_SYNC, "");
         } else if (!spa.contains(SETTINGS_PREFERENCES_SYNC) && sync == null) {
             Log.d(TAG, "First if sync!");
-            sync = "10800";
+            sync = "60";
         } else if (spa.contains(SETTINGS_PREFERENCES_SYNC) && !(sync.equals(spa.getString(SETTINGS_PREFERENCES_SYNC, "")))) {
             Log.d(TAG, "else if sync!");
             sync = spa.getString(SETTINGS_PREFERENCES_SYNC, "");
             CheckConfigurationService.periodicSync(this, Long.parseLong(sync), DEFAULT_FLEX, TASK_TAG, true, true);
-            Toast.makeText(getApplicationContext(), "Service are updated", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "Service is updated", Toast.LENGTH_SHORT).show();
         }
 
-        // notif
-        if (spa.contains(SETTINGS_PREFERENCES_SOUND_NOTIFICATION) && notif == null) {
-            Log.d(TAG, "new start notif");
-            notif = spa.getBoolean(SETTINGS_PREFERENCES_SOUND_NOTIFICATION, false);
-        } else if (!spa.contains(SETTINGS_PREFERENCES_SOUND_NOTIFICATION) && notif == null) {
-            Log.d(TAG, "First if notif!");
-            notif = true;
-        } else if (spa.contains(SETTINGS_PREFERENCES_SOUND_NOTIFICATION) && !(notif == spa.getBoolean(SETTINGS_PREFERENCES_SOUND_NOTIFICATION, false))) {
-            Log.d(TAG, "else if notif!");
-            notif = spa.getBoolean(SETTINGS_PREFERENCES_SOUND_NOTIFICATION, false);
-            CheckConfigurationService.periodicSync(this, Long.parseLong(sync), DEFAULT_FLEX, TASK_TAG, true, false);
-            Toast.makeText(getApplicationContext(), "Service are updated", Toast.LENGTH_SHORT).show();
+        // notification
+        if (spa.contains(SETTINGS_PREFERENCES_NOTIFICATION) && notification == null) {
+            Log.d(TAG, "new start notification");
+            notification = spa.getBoolean(SETTINGS_PREFERENCES_NOTIFICATION, false);
+        } else if (!spa.contains(SETTINGS_PREFERENCES_NOTIFICATION) && notification == null) {
+            Log.d(TAG, "First if notification!");
+            notification = true;
+        } else if (spa.contains(SETTINGS_PREFERENCES_NOTIFICATION) && !(notification == spa.getBoolean(SETTINGS_PREFERENCES_NOTIFICATION, false))) {
+            Log.d(TAG, "else if notification!");
+            notification = spa.getBoolean(SETTINGS_PREFERENCES_NOTIFICATION, false);
+            if (!notification) CheckConfigurationService.periodicSync(this, Long.parseLong(sync), DEFAULT_FLEX, TASK_TAG, true, false);
+             else CheckConfigurationService.periodicSync(this, Long.parseLong(sync), DEFAULT_FLEX, TASK_TAG, true, true);
+            Toast.makeText(getApplicationContext(), "Service is updated", Toast.LENGTH_SHORT).show();
         }
 
 
@@ -233,11 +232,11 @@ public class MainActivity extends AppCompatActivity {
                 sync = spa.getString(SETTINGS_PREFERENCES_SYNC, "");
             }
 
-            if (spa.contains(SETTINGS_PREFERENCES_SOUND_NOTIFICATION)) {
-                notif = spa.getBoolean(SETTINGS_PREFERENCES_SOUND_NOTIFICATION, false);
+            if (spa.contains(SETTINGS_PREFERENCES_NOTIFICATION)) {
+                notification = spa.getBoolean(SETTINGS_PREFERENCES_NOTIFICATION, false);
             }
 
-            Log.d(TAG, "click: language = " + language + "; posterSize = " + posterSize + "; sync = " + sync + "; notif = " + notif);
+            Log.d(TAG, "click: language = " + language + "; posterSize = " + posterSize + "; sync = " + sync + "; notification = " + notification);
 
             startActivity(menuIntent);
         }
@@ -255,7 +254,7 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences.Editor editor = sp.edit();
         editor.remove("language");
         editor.remove("sync");
-        editor.remove("notif");
+        editor.remove("notification");
         editor.remove("posterSize");
         editor.commit();
     }
@@ -268,8 +267,8 @@ public class MainActivity extends AppCompatActivity {
         MainActivity.sync = sync;
     }
 
-    public static void setNotif(Boolean notif) {
-        MainActivity.notif = notif;
+    public static void setNotification(Boolean notification) {
+        MainActivity.notification = notification;
     }
 
     public static void setPosterSize(String posterSize) {
@@ -296,6 +295,10 @@ public class MainActivity extends AppCompatActivity {
                 Log.d(TAG, "t" + t.toString());
             }
         });
+    }
+
+    public static SharedPreferences getSpa() {
+        return spa;
     }
 }
 
