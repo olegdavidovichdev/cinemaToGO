@@ -112,8 +112,8 @@ public class MainActivity extends AppCompatActivity {
             });
 
             CheckConfigurationService.periodicSync(this, DEFAULT_PERIOD, DEFAULT_FLEX, TASK_TAG, false, true);
-
         }
+
         spa = PreferenceManager.getDefaultSharedPreferences(this);
 
         final RecyclerView recyclerView = (RecyclerView) findViewById(R.id.movies_recycler_view);
@@ -148,7 +148,11 @@ public class MainActivity extends AppCompatActivity {
         Log.d(TAG, "language =" + language);
 
         // language
-        if (!spa.contains(SETTINGS_PREFERENCES_LANGUAGE) && language == null) {
+        if (spa.contains(SETTINGS_PREFERENCES_LANGUAGE) && language == null) {
+            Log.d(TAG, "new start language");
+            language = spa.getString(SETTINGS_PREFERENCES_LANGUAGE, "");
+            createRequest(language);
+        } else if (!spa.contains(SETTINGS_PREFERENCES_LANGUAGE) && language == null) {
             Log.d(TAG, "First if language!");
             language = "en";
             createRequest(language);
@@ -159,7 +163,10 @@ public class MainActivity extends AppCompatActivity {
         }
 
         // poster size
-        if (!spa.contains(SETTINGS_PREFERENCES_POSTER_SIZE) && posterSize == null) {
+        if (spa.contains(SETTINGS_PREFERENCES_POSTER_SIZE) && posterSize == null) {
+            Log.d(TAG, "new start poster size");
+            posterSize = spa.getString(SETTINGS_PREFERENCES_POSTER_SIZE, "");
+        } else if (!spa.contains(SETTINGS_PREFERENCES_POSTER_SIZE) && posterSize == null) {
             Log.d(TAG, "First if poster size!");
             posterSize = "w500";
         } else if (spa.contains(SETTINGS_PREFERENCES_POSTER_SIZE) && !(posterSize.equals(spa.getString(SETTINGS_PREFERENCES_POSTER_SIZE, "")))) {
@@ -168,7 +175,10 @@ public class MainActivity extends AppCompatActivity {
         }
 
         // sync
-        if (!spa.contains(SETTINGS_PREFERENCES_SYNC) && sync == null) {
+        if (spa.contains(SETTINGS_PREFERENCES_SYNC) && sync == null) {
+            Log.d(TAG, "new start sync");
+            sync = spa.getString(SETTINGS_PREFERENCES_SYNC, "");
+        } else if (!spa.contains(SETTINGS_PREFERENCES_SYNC) && sync == null) {
             Log.d(TAG, "First if sync!");
             sync = "10800";
         } else if (spa.contains(SETTINGS_PREFERENCES_SYNC) && !(sync.equals(spa.getString(SETTINGS_PREFERENCES_SYNC, "")))) {
@@ -179,7 +189,10 @@ public class MainActivity extends AppCompatActivity {
         }
 
         // notif
-        if (!spa.contains(SETTINGS_PREFERENCES_SOUND_NOTIFICATION) && notif == null) {
+        if (spa.contains(SETTINGS_PREFERENCES_SOUND_NOTIFICATION) && notif == null) {
+            Log.d(TAG, "new start notif");
+            notif = spa.getBoolean(SETTINGS_PREFERENCES_SOUND_NOTIFICATION, false);
+        } else if (!spa.contains(SETTINGS_PREFERENCES_SOUND_NOTIFICATION) && notif == null) {
             Log.d(TAG, "First if notif!");
             notif = true;
         } else if (spa.contains(SETTINGS_PREFERENCES_SOUND_NOTIFICATION) && !(notif == spa.getBoolean(SETTINGS_PREFERENCES_SOUND_NOTIFICATION, false))) {
