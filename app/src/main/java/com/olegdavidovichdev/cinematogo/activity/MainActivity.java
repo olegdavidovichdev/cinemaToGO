@@ -2,6 +2,7 @@ package com.olegdavidovichdev.cinematogo.activity;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -20,6 +21,7 @@ import com.olegdavidovichdev.cinematogo.adapter.MoviesAdapter;
 import com.olegdavidovichdev.cinematogo.model.ConfigurationResponse;
 import com.olegdavidovichdev.cinematogo.model.Movie;
 import com.olegdavidovichdev.cinematogo.model.MovieResponse;
+import com.olegdavidovichdev.cinematogo.network.CheckNetwork;
 import com.olegdavidovichdev.cinematogo.rest.ApiClient;
 import com.olegdavidovichdev.cinematogo.rest.ApiInterface;
 import com.olegdavidovichdev.cinematogo.service.CheckConfigurationService;
@@ -48,18 +50,23 @@ public class MainActivity extends AppCompatActivity {
     private static final String SETTINGS_PREFERENCES_POSTER_SIZE = "posterSize";
 
 
-    private static final long DEFAULT_PERIOD = 10800;
-    private static final long DEFAULT_FLEX = 100;
+    private static final long DEFAULT_PERIOD = 60;
+    private static final long DEFAULT_FLEX = 10;
 
     private ProgressBar pb;
     private RecyclerView recyclerView;
 
-    private String language;
-    private String sync;
-    private Boolean notif;
-    private String posterSize;
+    private static String language;
+    private static String sync;
+    private static Boolean notif;
+    private static String posterSize;
 
     private String baseUrlImages;
+
+    private boolean b;
+
+    private Bundle recyclerViewState;
+    private LinearLayoutManager llm;
 
 
     @Override
@@ -108,53 +115,85 @@ public class MainActivity extends AppCompatActivity {
 
         }
         spa = PreferenceManager.getDefaultSharedPreferences(this);
+
+        final RecyclerView recyclerView = (RecyclerView) findViewById(R.id.movies_recycler_view);
+        llm = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(llm);
+
     }
 
+    @Override
+    protected void onPause() {
+        Log.d(TAG, "onPause");
+        super.onPause();
+        recyclerViewState = new Bundle();
+        Parcelable rvs = llm.onSaveInstanceState();
+        recyclerViewState.putParcelable("state", rvs);
+    }
 
     @Override
     protected void onResume() {
         super.onResume();
 
-        recyclerView.setVisibility(View.INVISIBLE);
-        pb.setVisibility(View.VISIBLE);
+        if (recyclerViewState != null) {
+            Parcelable rvs = recyclerViewState.getParcelable("state");
+            llm.onRestoreInstanceState(rvs);
+        }
 
-        if (!spa.contains(SETTINGS_PREFERENCES_LANGUAGE)) {
+        if (!CheckNetwork.isInternetAvailable(this)) {
+            Toast.makeText(this, "Internet is unavailable. Please, restart the app", Toast.LENGTH_LONG).show();
+            pb.setVisibility(View.INVISIBLE);
+        }
+
+        Log.d(TAG, "language =" + language);
+
+        // language
+        if (!spa.contains(SETTINGS_PREFERENCES_LANGUAGE) && language == null) {
+            Log.d(TAG, "First if language!");
             language = "en";
-        } else language = spa.getString(SETTINGS_PREFERENCES_LANGUAGE, null);
-        language = spa.getString("language", null);
-        sync = spa.getString("sync", null);
-        notif = spa.getBoolean("notif", false);
-        if (!spa.contains(SETTINGS_PREFERENCES_POSTER_SIZE)) {
+            createRequest(language);
+        } else if (spa.contains(SETTINGS_PREFERENCES_LANGUAGE) && !(language.equals(spa.getString(SETTINGS_PREFERENCES_LANGUAGE, "")))) {
+            Log.d(TAG, "else if language!");
+            language = spa.getString(SETTINGS_PREFERENCES_LANGUAGE, "");
+            createRequest(language);
+        }
+
+        // poster size
+        if (!spa.contains(SETTINGS_PREFERENCES_POSTER_SIZE) && posterSize == null) {
+            Log.d(TAG, "First if poster size!");
             posterSize = "w500";
-        } else posterSize = spa.getString(SETTINGS_PREFERENCES_POSTER_SIZE, null);
+        } else if (spa.contains(SETTINGS_PREFERENCES_POSTER_SIZE) && !(posterSize.equals(spa.getString(SETTINGS_PREFERENCES_POSTER_SIZE, "")))) {
+            Log.d(TAG, "else if poster size!");
+            posterSize = spa.getString(SETTINGS_PREFERENCES_POSTER_SIZE, "");
+        }
+
+        // sync
+        if (!spa.contains(SETTINGS_PREFERENCES_SYNC) && sync == null) {
+            Log.d(TAG, "First if sync!");
+            sync = "10800";
+        } else if (spa.contains(SETTINGS_PREFERENCES_SYNC) && !(sync.equals(spa.getString(SETTINGS_PREFERENCES_SYNC, "")))) {
+            Log.d(TAG, "else if sync!");
+            sync = spa.getString(SETTINGS_PREFERENCES_SYNC, "");
+            CheckConfigurationService.periodicSync(this, Long.parseLong(sync), DEFAULT_FLEX, TASK_TAG, true, true);
+            Toast.makeText(getApplicationContext(), "Service are updated", Toast.LENGTH_SHORT).show();
+        }
+
+        // notif
+        if (!spa.contains(SETTINGS_PREFERENCES_SOUND_NOTIFICATION) && notif == null) {
+            Log.d(TAG, "First if notif!");
+            notif = true;
+        } else if (spa.contains(SETTINGS_PREFERENCES_SOUND_NOTIFICATION) && !(notif == spa.getBoolean(SETTINGS_PREFERENCES_SOUND_NOTIFICATION, false))) {
+            Log.d(TAG, "else if notif!");
+            notif = spa.getBoolean(SETTINGS_PREFERENCES_SOUND_NOTIFICATION, false);
+            CheckConfigurationService.periodicSync(this, Long.parseLong(sync), DEFAULT_FLEX, TASK_TAG, true, false);
+            Toast.makeText(getApplicationContext(), "Service are updated", Toast.LENGTH_SHORT).show();
+        }
 
 
         FilmDetailActivity.setPosterSize(posterSize);
         FilmDetailActivity.setLanguage(language);
 
-        Log.d(TAG, "current = " + spa.getAll().toString());
-
-        final RecyclerView recyclerView = (RecyclerView) findViewById(R.id.movies_recycler_view);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-        ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
-
-        Call<MovieResponse> call = apiService.getUpcomingMovies(API_KEY, language);
-        call.enqueue(new Callback<MovieResponse>() {
-            @Override
-            public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
-                //  Log.d(TAG, "response" + response.body());
-                pb.setVisibility(View.INVISIBLE);
-                recyclerView.setVisibility(View.VISIBLE);
-                List<Movie> movies = response.body().getResults();
-                recyclerView.setAdapter(new MoviesAdapter(movies, getApplicationContext(), recyclerView));
-            }
-
-            @Override
-            public void onFailure(Call<MovieResponse> call, Throwable t) {
-                Log.d(TAG, "t" + t.toString());
-            }
-        });
+        Log.d(TAG, "spa = " + spa.getAll().toString());
     }
 
     @Override
@@ -168,6 +207,25 @@ public class MainActivity extends AppCompatActivity {
         Intent menuIntent;
         if (item.getItemId() == R.id.menu_settings) {
             menuIntent = new Intent(this, SettingsActivity.class);
+
+            if (spa.contains(SETTINGS_PREFERENCES_LANGUAGE)) {
+             language = spa.getString(SETTINGS_PREFERENCES_LANGUAGE, "");
+            }
+
+            if (spa.contains(SETTINGS_PREFERENCES_POSTER_SIZE)) {
+                posterSize = spa.getString(SETTINGS_PREFERENCES_POSTER_SIZE, "");
+            }
+
+            if (spa.contains(SETTINGS_PREFERENCES_SYNC)) {
+                sync = spa.getString(SETTINGS_PREFERENCES_SYNC, "");
+            }
+
+            if (spa.contains(SETTINGS_PREFERENCES_SOUND_NOTIFICATION)) {
+                notif = spa.getBoolean(SETTINGS_PREFERENCES_SOUND_NOTIFICATION, false);
+            }
+
+            Log.d(TAG, "click: language = " + language + "; posterSize = " + posterSize + "; sync = " + sync + "; notif = " + notif);
+
             startActivity(menuIntent);
         }
         if (item.getItemId() == R.id.menu_favorites) {
@@ -178,6 +236,7 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+
     //вспомогательный, потом можно удалить
     public void delete() {
         SharedPreferences.Editor editor = sp.edit();
@@ -187,4 +246,44 @@ public class MainActivity extends AppCompatActivity {
         editor.remove("posterSize");
         editor.commit();
     }
+
+    public static void setLanguage(String language) {
+        MainActivity.language = language;
+    }
+
+    public static void setSync(String sync) {
+        MainActivity.sync = sync;
+    }
+
+    public static void setNotif(Boolean notif) {
+        MainActivity.notif = notif;
+    }
+
+    public static void setPosterSize(String posterSize) {
+        MainActivity.posterSize = posterSize;
+    }
+
+    public void createRequest(String lang) {
+        recyclerView.setVisibility(View.INVISIBLE);
+        pb.setVisibility(View.VISIBLE);
+        ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
+        Call<MovieResponse> call = apiService.getUpcomingMovies(API_KEY, lang);
+        call.enqueue(new Callback<MovieResponse>() {
+            @Override
+            public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
+                Log.d(TAG, "call = " + call.request().toString());
+                pb.setVisibility(View.INVISIBLE);
+                recyclerView.setVisibility(View.VISIBLE);
+                List<Movie> movies = response.body().getResults();
+                recyclerView.setAdapter(new MoviesAdapter(movies, getApplicationContext(), recyclerView));
+            }
+
+            @Override
+            public void onFailure(Call<MovieResponse> call, Throwable t) {
+                Log.d(TAG, "t" + t.toString());
+            }
+        });
+    }
 }
+
+

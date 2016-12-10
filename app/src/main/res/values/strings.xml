@@ -91,4 +91,5 @@
 
     <string name="notif_ticker">Your favorite film is out now!</string>
     <string name="notif_content_text">Film out on the screen today!</string>
+    <string name="toolbar_title_settings">Settings</string>
 </resources>

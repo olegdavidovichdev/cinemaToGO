@@ -1,7 +1,12 @@
 package com.olegdavidovichdev.cinematogo.service;
 
+import android.app.AlarmManager;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.support.v7.app.NotificationCompat;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -14,6 +19,8 @@ import com.olegdavidovichdev.cinematogo.model.ConfigurationResponse;
 import com.olegdavidovichdev.cinematogo.rest.ApiClient;
 import com.olegdavidovichdev.cinematogo.rest.ApiInterface;
 
+import java.util.Calendar;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -24,7 +31,10 @@ import retrofit2.Response;
 
 public class CheckConfigurationService extends GcmTaskService
 {
-  //  private static final String TASK_TAG = "periodicTask";
+    private SharedPreferences sp;
+    private static final String APP_PREFERENCES = "app_preferences";
+    private static final String APP_PREFERENCES_BASE_URL_IMAGES = "baseUrlImages";
+    private static final String EXTRA_KEY_UPDATE = "update";
     private static boolean notify;
 
     @Override
@@ -36,17 +46,17 @@ public class CheckConfigurationService extends GcmTaskService
             @Override
             public void onResponse(Call<ConfigurationResponse> call, Response<ConfigurationResponse> response) {
 
-                SharedPreferences myPrefs = getSharedPreferences("myPrefs", MODE_PRIVATE);
-                SharedPreferences.Editor e = myPrefs.edit();
-                e.putString("baseUrlImages", response.body().getImages().getBaseUrl());
+                SharedPreferences sp = getSharedPreferences(APP_PREFERENCES, MODE_PRIVATE);
+                SharedPreferences.Editor e = sp.edit();
+                e.putString(APP_PREFERENCES_BASE_URL_IMAGES, response.body().getImages().getBaseUrl());
                 e.apply();
-                Log.d("MainActivity", "Url is updated = " + myPrefs.getAll().toString());
+                Log.d("MainActivity", "Url is updated = " + sp.getAll().toString());
                 if (notify) createNotification();
             }
 
             @Override
             public void onFailure(Call<ConfigurationResponse> call, Throwable t) {
-
+                Log.d("MainActivity", "Failed to download API configuration");
             }
         });
         return GcmNetworkManager.RESULT_SUCCESS;
@@ -79,14 +89,18 @@ public class CheckConfigurationService extends GcmTaskService
 
     private void createNotification() {
 
-        Toast.makeText(getApplicationContext(), "API configuration was successfully updated", Toast.LENGTH_LONG).show();
+       // Toast.makeText(getApplicationContext(), "API configuration was successfully updated", Toast.LENGTH_LONG).show();
+        Calendar now = Calendar.getInstance();
+        Log.d("MainActivity", "createNotification");
+        Intent intent = new Intent(this, NotificationReceiver.class);
+        intent.putExtra(EXTRA_KEY_UPDATE, 1);
 
-        /*NotificationCompat.Builder builder = new NotificationCompat.Builder(getBaseContext());
-        builder.setSmallIcon(android.R.drawable.stat_notify_sync);
-        builder.setContentTitle("CinemaToGO");
-        builder.setContentText("API configuration was successfully updated");
+        PendingIntent pi = PendingIntent.getBroadcast(this, 1, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        notificationManager.notify(1, builder.build());*/
+        AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
+        am.set(AlarmManager.RTC_WAKEUP, now.getTimeInMillis(), pi);
+
+
+
     }
 }

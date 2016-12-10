@@ -2,6 +2,7 @@ package com.olegdavidovichdev.cinematogo.activity;
 
 import android.app.ProgressDialog;
 import android.content.SharedPreferences;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -112,6 +113,7 @@ public class FilmDetailActivity extends AppCompatActivity implements View.OnClic
                             @Override
                             public void onError() {
                                 posterProgressBar.setVisibility(View.GONE);
+                                img.setImageDrawable(getResources().getDrawable(R.drawable.placeholder));
                                 Toast.makeText(getApplicationContext(), "Picture downloading error", Toast.LENGTH_SHORT).show();
                             }
                         });
@@ -120,15 +122,15 @@ public class FilmDetailActivity extends AppCompatActivity implements View.OnClic
                 // check fields
                 if (response.body().getTagLine().equals("")) {
                     tagline.setText(getResources().getString(R.string.unknown));
-                } else tagline.setText("«" + response.body().getTagLine() + "»");
+                } else tagline.setText(String.format("«%s»", response.body().getTagLine()));
 
                 if (response.body().getRuntime().equals("0")) {
                     runtime.setText(getResources().getString(R.string.unknown));
-                } else runtime.setText(response.body().getRuntime() + " " + getResources().getString(R.string.minutes));
+                } else runtime.setText(String.format("%s %s", response.body().getRuntime(), getResources().getString(R.string.minutes)));
 
                 if (response.body().getBudget().equals("0")) {
                     budget.setText(getResources().getString(R.string.unknown));
-                } else budget.setText(response.body().getBudget() + " " + getResources().getString(R.string.dollar));
+                } else budget.setText(String.format("%s %s", response.body().getBudget(), getResources().getString(R.string.dollar)));
 
 
                 popularity.setText(String.format("%s", response.body().getPopularity()));
@@ -166,7 +168,7 @@ public class FilmDetailActivity extends AppCompatActivity implements View.OnClic
                 new Tooltips(v, 3, Tooltip.Gravity.TOP, 2500, getString(R.string.tooltip_budget));
                 break;
             case R.id.img_adult:
-                new Tooltips(v, 4, Tooltip.Gravity.BOTTOM, 4000, getString(R.string.tooltip_adult));
+                new Tooltips(v, 4, Tooltip.Gravity.BOTTOM, 4500, getString(R.string.tooltip_adult));
                 break;
         }
     }

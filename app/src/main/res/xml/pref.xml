@@ -20,7 +20,7 @@
             android:summary="@string/pref_poster_size_subtitle"
             android:entries="@array/pref_poster_size_entries"
             android:entryValues="@array/pref_poster_size_entry_values"
-            android:defaultValue="w500"/>
+            android:defaultValue="w500" />
 
     </PreferenceCategory>
 
