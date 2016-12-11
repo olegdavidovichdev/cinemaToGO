@@ -40,7 +40,7 @@ public class NotificationReceiver extends BroadcastReceiver {
     private static final String APP_PREFERENCES = "app_preferences";
     private static final String APP_PREFERENCES_BASE_URL_IMAGES = "baseUrlImages";
 
-    private static final String EXTRA_KEY_UPDATE = "update";
+    private static final String EXTRA_KEY = "key";
 
     private static String url;
 
@@ -48,61 +48,64 @@ public class NotificationReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
 
-        int key = intent.getIntExtra(EXTRA_KEY_UPDATE, 0);
-        if (key == 1) {
-            NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
-            builder.setSmallIcon(R.drawable.notification_update);
-            builder.setContentTitle(context.getResources().getString(R.string.app_name));
-            builder.setContentText("API configuration was successfully updated");
-            builder.setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.mipmap.launcher));
-            builder.setDefaults(Notification.DEFAULT_ALL);
+        int key = intent.getIntExtra(EXTRA_KEY, 0);
 
-            NotificationManager notificationManager = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
-            notificationManager.notify(0, builder.build());
-        }
+        switch (key) {
 
-        else {
-            String title = intent.getStringExtra("film_name");
-            String release = intent.getStringExtra("film_release");
-            String poster = intent.getStringExtra("film_poster");
-            int notificationId = intent.getIntExtra("notification_id", 0);
+            case 1:
+                NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
+                builder.setSmallIcon(R.drawable.notification_update);
+                builder.setContentTitle(context.getResources().getString(R.string.app_name));
+                builder.setContentText("API configuration was successfully updated");
+                builder.setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.mipmap.launcher));
+                builder.setDefaults(Notification.DEFAULT_ALL);
 
-            sp = context.getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
+                NotificationManager notificationManager = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
+                notificationManager.notify(0, builder.build());
+                break;
 
-            String http = sp.getString(APP_PREFERENCES_BASE_URL_IMAGES, "");
+            case 2:
+                String title = intent.getStringExtra("film_name");
+                String release = intent.getStringExtra("film_release");
+                String poster = intent.getStringExtra("film_poster");
+                int notificationId = intent.getIntExtra("notification_id", 0);
 
-            url = http + "w500" + poster;
+                sp = context.getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
 
-            Log.d(TAG, title + " / " + release + " / " + poster);
-            Log.d(TAG, url);
-            Log.d(TAG, "id = " + notificationId);
+                String http = sp.getString(APP_PREFERENCES_BASE_URL_IMAGES, "");
 
-            Intent intentInfo = new Intent(context, FavoritesMovieActivity.class);
+                url = http + "w500" + poster;
 
-            PendingIntent pi = PendingIntent.getActivity(context, 0, intentInfo, 0);
-            final NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
-            builder.setTicker(context.getString(R.string.notif_ticker));
-            builder.setSmallIcon(R.drawable.notification_favorites);
-            builder.setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.mipmap.launcher));
-            builder.setContentTitle(title);
-            builder.setContentText(context.getString(R.string.notif_content_text));
-            builder.setDefaults(Notification.DEFAULT_SOUND);
-            builder.setContentIntent(pi);
-            builder.setAutoCancel(true);
-            builder.setGroup("fav_film");
-            builder.setGroupSummary(true);
+                Log.d(TAG, title + " / " + release + " / " + poster);
+                Log.d(TAG, url);
+                Log.d(TAG, "id = " + notificationId);
 
-            if (CheckNetwork.isInternetAvailable(context)) {
-                try {
-                    builder.setStyle(new android.support.v4.app.NotificationCompat.BigPictureStyle()
-                            .setSummaryText(context.getString(R.string.notif_content_text)).bigPicture(getBitmap()));
-                } catch (ExecutionException | InterruptedException e) {
-                    e.printStackTrace();
+                Intent intentInfo = new Intent(context, FavoritesMovieActivity.class);
+
+                PendingIntent pi = PendingIntent.getActivity(context, 0, intentInfo, 0);
+                builder = new NotificationCompat.Builder(context);
+                builder.setTicker(context.getString(R.string.notif_ticker));
+                builder.setSmallIcon(R.drawable.notification_favorites);
+                builder.setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.mipmap.launcher));
+                builder.setContentTitle(title);
+                builder.setContentText(context.getString(R.string.notif_content_text));
+                builder.setDefaults(Notification.DEFAULT_SOUND);
+                builder.setContentIntent(pi);
+                builder.setAutoCancel(true);
+                builder.setGroupSummary(true);
+
+                if (CheckNetwork.isInternetAvailable(context)) {
+                    try {
+                        builder.setStyle(new android.support.v4.app.NotificationCompat.BigPictureStyle()
+                                .setSummaryText(context.getString(R.string.notif_content_text)).bigPicture(getBitmap()));
+                    } catch (ExecutionException | InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
-            }
 
-            NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
-            mNotificationManager.notify(notificationId, builder.build());
+                NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
+                mNotificationManager.notify(notificationId, builder.build());
+                break;
         }
     }
 

@@ -31,7 +31,7 @@ public class CheckConfigurationService extends GcmTaskService
     private SharedPreferences spa;
     private static final String APP_PREFERENCES = "app_preferences";
     private static final String APP_PREFERENCES_BASE_URL_IMAGES = "baseUrlImages";
-    private static final String EXTRA_KEY_UPDATE = "update";
+    private static final String EXTRA_KEY = "key";
 
     private static final String SETTINGS_PREFERENCES_NOTIFICATION = "notification";
 
@@ -98,7 +98,7 @@ public class CheckConfigurationService extends GcmTaskService
         Calendar now = Calendar.getInstance();
         Log.d("MainActivity", "createNotification");
         Intent intent = new Intent(this, NotificationReceiver.class);
-        intent.putExtra(EXTRA_KEY_UPDATE, 1);
+        intent.putExtra(EXTRA_KEY, 1);
 
         PendingIntent pi = PendingIntent.getBroadcast(this, 1, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 

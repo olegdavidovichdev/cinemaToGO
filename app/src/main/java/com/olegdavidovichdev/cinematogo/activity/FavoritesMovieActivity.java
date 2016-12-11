@@ -39,6 +39,8 @@ public class FavoritesMovieActivity extends AppCompatActivity {
     private static FavoritesMovieAdapter adapter;
     private List<FavoritesMovieDB> movieList;
 
+    private static final String EXTRA_KEY = "key";
+
     private static int counter = 0;
 
     @Override
@@ -97,6 +99,7 @@ public class FavoritesMovieActivity extends AppCompatActivity {
                                 Log.d(TAG, targetDate.toString());*/
 
                                 Intent intent = new Intent(getBaseContext(), NotificationReceiver.class);
+                                intent.putExtra(EXTRA_KEY, 2);
                                 intent.putExtra("film_name", m.getName());
                                 intent.putExtra("film_release", m.getRelease());
                                 intent.putExtra("film_poster", m.getPoster());

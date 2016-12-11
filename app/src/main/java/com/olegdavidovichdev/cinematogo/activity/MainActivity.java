@@ -48,8 +48,8 @@ public class MainActivity extends AppCompatActivity {
     private static final String SETTINGS_PREFERENCES_SYNC = "sync";
     private static final String SETTINGS_PREFERENCES_NOTIFICATION = "notification";
 
-    private static final long DEFAULT_PERIOD = 3600;
-    private static final long DEFAULT_FLEX = 50;
+    private static final long DEFAULT_PERIOD = 60;
+    private static final long DEFAULT_FLEX = 10;
 
     private ProgressBar pb;
     private RecyclerView recyclerView;
@@ -176,7 +176,7 @@ public class MainActivity extends AppCompatActivity {
             sync = spa.getString(SETTINGS_PREFERENCES_SYNC, "");
         } else if (!spa.contains(SETTINGS_PREFERENCES_SYNC) && sync == null) {
             Log.d(TAG, "First if sync!");
-            sync = "3600";
+            sync = "60";
         } else if (spa.contains(SETTINGS_PREFERENCES_SYNC) && !(sync.equals(spa.getString(SETTINGS_PREFERENCES_SYNC, "")))) {
             Log.d(TAG, "else if sync!");
             sync = spa.getString(SETTINGS_PREFERENCES_SYNC, "");
