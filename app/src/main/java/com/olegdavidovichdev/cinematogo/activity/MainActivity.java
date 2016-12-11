@@ -42,14 +42,14 @@ public class MainActivity extends AppCompatActivity {
     private static final String APP_PREFERENCES = "app_preferences";
     private static final String APP_PREFERENCES_BASE_URL_IMAGES = "baseUrlImages";
 
-    private static SharedPreferences spa;
+    private SharedPreferences spa;
     private static final String SETTINGS_PREFERENCES_LANGUAGE = "language";
     private static final String SETTINGS_PREFERENCES_POSTER_SIZE = "posterSize";
     private static final String SETTINGS_PREFERENCES_SYNC = "sync";
     private static final String SETTINGS_PREFERENCES_NOTIFICATION = "notification";
 
-    private static final long DEFAULT_PERIOD = 60;
-    private static final long DEFAULT_FLEX = 10;
+    private static final long DEFAULT_PERIOD = 3600;
+    private static final long DEFAULT_FLEX = 50;
 
     private ProgressBar pb;
     private RecyclerView recyclerView;
@@ -60,8 +60,6 @@ public class MainActivity extends AppCompatActivity {
     private static String posterSize;
 
     private String baseUrlImages;
-
-    private boolean b;
 
     private Bundle recyclerViewState;
     private LinearLayoutManager llm;
@@ -178,7 +176,7 @@ public class MainActivity extends AppCompatActivity {
             sync = spa.getString(SETTINGS_PREFERENCES_SYNC, "");
         } else if (!spa.contains(SETTINGS_PREFERENCES_SYNC) && sync == null) {
             Log.d(TAG, "First if sync!");
-            sync = "60";
+            sync = "3600";
         } else if (spa.contains(SETTINGS_PREFERENCES_SYNC) && !(sync.equals(spa.getString(SETTINGS_PREFERENCES_SYNC, "")))) {
             Log.d(TAG, "else if sync!");
             sync = spa.getString(SETTINGS_PREFERENCES_SYNC, "");
@@ -295,10 +293,6 @@ public class MainActivity extends AppCompatActivity {
                 Log.d(TAG, "t" + t.toString());
             }
         });
-    }
-
-    public static SharedPreferences getSpa() {
-        return spa;
     }
 }
 

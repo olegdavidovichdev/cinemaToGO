@@ -26,23 +26,23 @@
     <string name="pref_sync_title">Sync</string>
     <string name="pref_sync_subtitle">Choose a time when app sync with API</string>
     <string-array name="pref_sync_entries">
+        <item>1 hour</item>
+        <item>2 hour</item>
         <item>3 hour</item>
-        <item>6 hour</item>
-        <item>12 hour</item>
-        <item>24 hour</item>
-        <item>48 hour</item>
+        <item>4 hour</item>
+        <item>5 hour</item>
     </string-array>
     <string-array name="pref_sync_entry_values">
-        <item>60</item>
-        <item>120</item>
-        <item>180</item>
-        <item>240</item>
-        <item>300</item>
+        <item>3600</item>
+        <item>7200</item>
+        <item>10800</item>
+        <item>14400</item>
+        <item>18000</item>
     </string-array>
 
     <!-- PREF NOTIF -->
-    <string name="pref_notif_title">Push-notification</string>
-    <string name="pref_notif_subtitle">Notify user when API configuration updated</string>
+    <string name="pref_notif_title">Notification</string>
+    <string name="pref_notif_subtitle">Notify when API configuration updated</string>
 
     <!-- PREF POSTER SIZE -->
     <string name="pref_poster_size_title">Posters</string>

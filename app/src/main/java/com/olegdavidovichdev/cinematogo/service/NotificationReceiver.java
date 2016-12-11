@@ -12,6 +12,7 @@ import android.graphics.BitmapFactory;
 import android.support.v7.app.NotificationCompat;
 import android.util.Log;
 
+import com.google.common.base.Defaults;
 import com.olegdavidovichdev.cinematogo.R;
 import com.olegdavidovichdev.cinematogo.activity.FavoritesMovieActivity;
 import com.olegdavidovichdev.cinematogo.network.CheckNetwork;
@@ -25,6 +26,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+import static android.content.Context.ALARM_SERVICE;
 import static android.content.Context.NOTIFICATION_SERVICE;
 
 /**
@@ -49,10 +51,11 @@ public class NotificationReceiver extends BroadcastReceiver {
         int key = intent.getIntExtra(EXTRA_KEY_UPDATE, 0);
         if (key == 1) {
             NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
-            builder.setSmallIcon(android.R.drawable.stat_notify_sync);
-            builder.setContentTitle("CinemaToGO");
+            builder.setSmallIcon(R.drawable.notification_update);
+            builder.setContentTitle(context.getResources().getString(R.string.app_name));
             builder.setContentText("API configuration was successfully updated");
             builder.setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.mipmap.launcher));
+            builder.setDefaults(Notification.DEFAULT_ALL);
 
             NotificationManager notificationManager = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
             notificationManager.notify(0, builder.build());
@@ -79,7 +82,7 @@ public class NotificationReceiver extends BroadcastReceiver {
             PendingIntent pi = PendingIntent.getActivity(context, 0, intentInfo, 0);
             final NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
             builder.setTicker(context.getString(R.string.notif_ticker));
-            builder.setSmallIcon(R.drawable.notif_small_icon);
+            builder.setSmallIcon(R.drawable.notification_favorites);
             builder.setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.mipmap.launcher));
             builder.setContentTitle(title);
             builder.setContentText(context.getString(R.string.notif_content_text));
