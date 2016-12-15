@@ -1,4 +1,4 @@
-# cinemaToGO alpha 1.2.0
+# CinemaToGO alpha 1.2.0
 
 CinemaToGO is a simple application which helps to find upcoming movies.
 
