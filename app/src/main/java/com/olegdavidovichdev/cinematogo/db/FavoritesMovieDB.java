@@ -46,4 +46,6 @@ public class FavoritesMovieDB extends SugarRecord {
     public String getPoster() {
         return poster;
     }
+
+
 }

@@ -2,9 +2,12 @@ package com.olegdavidovichdev.cinematogo.activity;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -15,7 +18,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.CompoundButton;
 import android.widget.ListView;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,13 +40,19 @@ public class FavoritesMovieActivity extends AppCompatActivity {
 
     private static final String TAG = FavoritesMovieActivity.class.getSimpleName();
 
-    private Toolbar toolbar;
-    private static FavoritesMovieAdapter adapter;
     private List<FavoritesMovieDB> movieList;
 
     private static final String EXTRA_KEY = "key";
 
+    private SharedPreferences sp;
+    private static final String APP_PREFERENCES = "app_preferences";
+
     private static int counter = 0;
+
+    private Bundle listViewState;
+
+    private ListView listFavFilm;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -50,18 +61,18 @@ public class FavoritesMovieActivity extends AppCompatActivity {
 
         setToolbar();
 
-        ListView listFavFilm = (ListView) findViewById(R.id.list_fav_film);
+        listFavFilm = (ListView) findViewById(R.id.list_fav_film);
 
         movieList = FavoritesMovieDB.listAll(FavoritesMovieDB.class);
         Log.d(TAG, "onCreate:movieList = " + movieList.toString());
 
-        adapter = new FavoritesMovieAdapter(this, movieList);
+        FavoritesMovieAdapter fma = new FavoritesMovieAdapter(this, movieList);
 
-        listFavFilm.setAdapter(adapter);
+        listFavFilm.setAdapter(fma);
 
         listFavFilm.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
                 TextView textView = (TextView) view.findViewById(R.id.fav_film_title);
                 String itemTitle = textView.getText().toString();
 
@@ -79,37 +90,7 @@ public class FavoritesMovieActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         switch (which) {
                             case 0:
-                                counter++;
-                                Log.d(TAG, "counter = " + counter);
 
-                                Calendar now = Calendar.getInstance();
-                                now.add(Calendar.SECOND, 15);
-                                /*String release = m.getRelease();
-
-                                int targetYear = Integer.parseInt(release.substring(0, 4));
-                                int targetMonth = Integer.parseInt(release.substring(5, 7));
-                                int targetDay = Integer.parseInt(release.substring(8, 10));
-                                int targetHour = new Random().nextInt(15 - 9) + 9;
-                                int targetMinute = new Random().nextInt(60);
-
-                                Calendar targetDate = new GregorianCalendar(targetYear, targetMonth - 1,
-                                        targetDay, targetHour, targetMinute);
-
-
-                                Log.d(TAG, targetDate.toString());*/
-
-                                Intent intent = new Intent(getBaseContext(), NotificationReceiver.class);
-                                intent.putExtra(EXTRA_KEY, 2);
-                                intent.putExtra("film_name", m.getName());
-                                intent.putExtra("film_release", m.getRelease());
-                                intent.putExtra("film_poster", m.getPoster());
-                                intent.putExtra("notification_id", counter);
-
-                                PendingIntent pendingIntent = PendingIntent.getBroadcast(getBaseContext(),
-                                        counter, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-                                AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
-                                am.set(AlarmManager.RTC_WAKEUP, now.getTimeInMillis(), pendingIntent);
                         }
                     }
                 });
@@ -118,13 +99,19 @@ public class FavoritesMovieActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        sp = getSharedPreferences(APP_PREFERENCES, MODE_PRIVATE);
+        Log.d(TAG, sp.getAll().toString() + "");
+    }
+
     private void setToolbar() {
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(R.string.fav_activity_name);
       //  getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-
     }
 
     @Override
@@ -145,10 +132,30 @@ public class FavoritesMovieActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
 
+                        sp = getSharedPreferences(APP_PREFERENCES, MODE_PRIVATE);
+                        SharedPreferences.Editor e = sp.edit();
+                        for (int i = 0; i < movieList.size(); i++) {
+                            e.remove(String.valueOf(i));
+                        }
+                        e.apply();
+                        Log.d(TAG, sp.getAll().toString());
+
+                        FavoritesMovieAdapter fma = (FavoritesMovieAdapter) listFavFilm.getAdapter();
+                        for (int i = 0; i< movieList.size(); i++) {
+                            Intent intent = new Intent(getApplicationContext(), NotificationReceiver.class);
+                            PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(),
+                                    i, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+                            AlarmManager am = (AlarmManager) getApplicationContext().getSystemService(Context.ALARM_SERVICE);
+                            am.cancel(pendingIntent);
+                        }
+
                         FavoritesMovieDB.deleteAll(FavoritesMovieDB.class);
                         movieList.clear();
-                        adapter.notifyDataSetChanged();
+
+                        fma.notifyDataSetChanged();
                         Log.d(TAG, "delete all = " + FavoritesMovieDB.listAll(FavoritesMovieDB.class));
+
 
                     }
                 });

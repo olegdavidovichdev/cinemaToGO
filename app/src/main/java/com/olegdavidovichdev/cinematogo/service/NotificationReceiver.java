@@ -15,6 +15,7 @@ import android.util.Log;
 import com.google.common.base.Defaults;
 import com.olegdavidovichdev.cinematogo.R;
 import com.olegdavidovichdev.cinematogo.activity.FavoritesMovieActivity;
+import com.olegdavidovichdev.cinematogo.activity.MainActivity;
 import com.olegdavidovichdev.cinematogo.network.CheckNetwork;
 
 import java.io.IOException;
@@ -53,12 +54,17 @@ public class NotificationReceiver extends BroadcastReceiver {
         switch (key) {
 
             case 1:
+                Intent in = new Intent(context, MainActivity.class);
+                PendingIntent p = PendingIntent.getActivity(context, 0, in, 0);
+
                 NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
                 builder.setSmallIcon(R.drawable.notification_update);
                 builder.setContentTitle(context.getResources().getString(R.string.app_name));
                 builder.setContentText("API configuration was successfully updated");
                 builder.setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.mipmap.launcher));
                 builder.setDefaults(Notification.DEFAULT_ALL);
+                builder.setContentIntent(p);
+                builder.setAutoCancel(true);
 
                 NotificationManager notificationManager = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
                 notificationManager.notify(0, builder.build());

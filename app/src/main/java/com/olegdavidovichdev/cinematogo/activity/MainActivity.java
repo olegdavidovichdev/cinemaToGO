@@ -124,7 +124,7 @@ public class MainActivity extends AppCompatActivity {
         super.onPause();
         recyclerViewState = new Bundle();
         Parcelable rvs = llm.onSaveInstanceState();
-        recyclerViewState.putParcelable("state", rvs);
+        recyclerViewState.putParcelable("rvs_state", rvs);
     }
 
     @Override
@@ -132,7 +132,7 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
 
         if (recyclerViewState != null) {
-            Parcelable rvs = recyclerViewState.getParcelable("state");
+            Parcelable rvs = recyclerViewState.getParcelable("rvs_state");
             llm.onRestoreInstanceState(rvs);
         }
 

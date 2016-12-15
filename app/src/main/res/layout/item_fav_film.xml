@@ -24,6 +24,16 @@
             android:layout_marginTop="2dp"
             android:layout_marginBottom="2dp"/>
 
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_centerInParent="true"
+            android:id="@+id/fav_film_placeholder"
+            android:src="@drawable/placeholder_fav_film"
+            android:layout_marginTop="2dp"
+            android:visibility="invisible"
+            android:layout_marginBottom="2dp"/>
+
     </RelativeLayout>
 
     <RelativeLayout
@@ -35,17 +45,6 @@
         android:layout_toRightOf="@+id/layout_fav_film_image"
         android:layout_toEndOf="@+id/layout_fav_film_image"
         android:id="@+id/relativeLayout2">
-
-        <ImageView
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:id="@+id/fav_film_bin"
-            android:src="@mipmap/delete_item"
-            android:layout_marginRight="28dp"
-            android:layout_marginEnd="28dp"
-            android:layout_centerVertical="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true" />
 
         <TextView
             android:id="@+id/fav_film_title"
@@ -72,7 +71,26 @@
             android:layout_toLeftOf="@+id/fav_film_bin"
             android:layout_toStartOf="@+id/fav_film_bin" />
 
+        <Switch
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/fav_film_switch"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginRight="20dp"
+            android:layout_marginEnd="20dp"/>
 
+        <ImageView
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:id="@+id/fav_film_bin"
+            android:src="@mipmap/delete_item"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@+id/fav_film_switch"
+            android:layout_toStartOf="@+id/fav_film_switch"
+            android:layout_marginRight="15dp"
+            android:layout_marginEnd="15dp"/>
 
 
     </RelativeLayout>
