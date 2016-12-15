@@ -9,7 +9,7 @@ CinemaToGO is a simple application which helps to find upcoming movies.
 4. The app automatically receives actual API configuration.
 5. Special screen for modify the app settings.
 
-## Screenshots
+## Screenshots:
 ![Main Screen English] (/screenshots/1.png)
 ![Main Screen Russian] (/screenshots/2.png)
 ![Favorites list] (/screenshots/3.png)
