@@ -1,12 +1,12 @@
 # cinemaToGO alpha 1.2.0
 
-CinemaToGO is a simple application which help to find upcoming movies.
+CinemaToGO is a simple application which helps to find upcoming movies.
 
 ## Key features:
-1. Search for English and Russian languages and region.
+1. Search for English and Russian languages.
 2. Detail information about each film.
-3. Favorites list and notifications helps never forget when your movies out.
-4. The app automatically recieve actual API configuration.
+3. Favorites list and notifications help don't forget when your movies out.
+4. The app automatically receives actual API configuration.
 5. Special screen for modify the app settings.
 
 ## Screenshots
