@@ -2,7 +2,7 @@
 
 CinemaToGO is a simple application which helps to find upcoming movies.
 
-## Fixed in *1.2.1*:
+### *Fixed in 1.2.1*:
 - Fixed switch bug after delete item in the Favorites list 
 
 ## Key features:
@@ -18,3 +18,4 @@ CinemaToGO is a simple application which helps to find upcoming movies.
 ![Favorites list] (/screenshots/3.png)
 ![Settings Screen] (/screenshots/4.png)
 ![Notification example] (/screenshots/5.png)
+![Movie Detail Screen] (/screenshots/6.png)
