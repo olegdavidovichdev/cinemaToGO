@@ -18,3 +18,4 @@ CinemaToGO is a simple application which helps to find upcoming movies.
 ![Favorites list] (/screenshots/3.png)
 ![Settings Screen] (/screenshots/4.png)
 ![Notification example] (/screenshots/5.png)
+![Movie Detail Screen] (/screenshots/6.png)
