@@ -7,7 +7,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -15,13 +14,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.CompoundButton;
 import android.widget.ListView;
-import android.widget.Switch;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.olegdavidovichdev.cinematogo.R;
@@ -29,12 +22,8 @@ import com.olegdavidovichdev.cinematogo.adapter.FavoritesMovieAdapter;
 import com.olegdavidovichdev.cinematogo.db.FavoritesMovieDB;
 import com.olegdavidovichdev.cinematogo.service.NotificationReceiver;
 
-import java.util.Calendar;
 import java.util.List;
 
-/**
- * Created by Oleg on 29.11.2016.
- */
 
 public class FavoritesMovieActivity extends AppCompatActivity {
 
@@ -42,14 +31,8 @@ public class FavoritesMovieActivity extends AppCompatActivity {
 
     private List<FavoritesMovieDB> movieList;
 
-    private static final String EXTRA_KEY = "key";
-
     private SharedPreferences sp;
     private static final String APP_PREFERENCES = "app_preferences";
-
-    private static int counter = 0;
-
-    private Bundle listViewState;
 
     private ListView listFavFilm;
 
@@ -67,50 +50,14 @@ public class FavoritesMovieActivity extends AppCompatActivity {
         Log.d(TAG, "onCreate:movieList = " + movieList.toString());
 
         FavoritesMovieAdapter fma = new FavoritesMovieAdapter(this, movieList);
-
         listFavFilm.setAdapter(fma);
-
-        listFavFilm.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
-                TextView textView = (TextView) view.findViewById(R.id.fav_film_title);
-                String itemTitle = textView.getText().toString();
-
-                List<FavoritesMovieDB> list = FavoritesMovieDB.find(FavoritesMovieDB.class, "name = ?", itemTitle);
-                final FavoritesMovieDB m = list.get(0);
-
-
-                String[] items = getResources().getStringArray(R.array.click_fav_movie);
-                ArrayAdapter<String> adapter = new ArrayAdapter<String>(FavoritesMovieActivity.this, R.layout.click_fav_movie, items);
-
-                AlertDialog.Builder builder = new AlertDialog.Builder(FavoritesMovieActivity.this);
-                builder.setTitle("Notify, if the movie will be released on the screen?");
-                builder.setAdapter(adapter, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        switch (which) {
-                            case 0:
-
-                        }
-                    }
-                });
-                builder.create().show();
-            }
-        });
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        sp = getSharedPreferences(APP_PREFERENCES, MODE_PRIVATE);
-        Log.d(TAG, sp.getAll().toString() + "");
     }
 
     private void setToolbar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(R.string.fav_activity_name);
-      //  getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    //  getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
     }
 
@@ -124,7 +71,7 @@ public class FavoritesMovieActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.menu_delete_all) {
             if (movieList.isEmpty()) {
-                Toast.makeText(getApplicationContext(), "Nothing to delete", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), R.string.nothing_to_delete, Toast.LENGTH_SHORT).show();
             } else {
                 AlertDialog.Builder builder = new AlertDialog.Builder(FavoritesMovieActivity.this);
                 builder.setMessage(R.string.dialog_delete_all);
@@ -135,10 +82,9 @@ public class FavoritesMovieActivity extends AppCompatActivity {
                         sp = getSharedPreferences(APP_PREFERENCES, MODE_PRIVATE);
                         SharedPreferences.Editor e = sp.edit();
                         for (int i = 0; i < movieList.size(); i++) {
-                            e.remove(String.valueOf(i));
+                            e.remove(movieList.get(i).getName());
                         }
                         e.apply();
-                        Log.d(TAG, sp.getAll().toString());
 
                         FavoritesMovieAdapter fma = (FavoritesMovieAdapter) listFavFilm.getAdapter();
                         for (int i = 0; i< movieList.size(); i++) {
@@ -154,11 +100,9 @@ public class FavoritesMovieActivity extends AppCompatActivity {
                         movieList.clear();
 
                         fma.notifyDataSetChanged();
-                        Log.d(TAG, "delete all = " + FavoritesMovieDB.listAll(FavoritesMovieDB.class));
-
-
                     }
                 });
+
                 builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {}
@@ -167,5 +111,9 @@ public class FavoritesMovieActivity extends AppCompatActivity {
             }
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public ListView getListFavFilm() {
+        return listFavFilm;
     }
 }

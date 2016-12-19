@@ -8,31 +8,29 @@ import com.orm.SugarRecord;
 
 public class FavoritesMovieDB extends SugarRecord {
 
-    private String num;
     private String name;
     private String release;
     private String poster;
+    private boolean enabled;
 
     public FavoritesMovieDB() {
     }
 
-    public FavoritesMovieDB(String num, String name, String release, String poster) {
-        this.num = num;
+    public FavoritesMovieDB(String name, String release, String poster, boolean enabled) {
         this.name = name;
         this.release = release;
         this.poster = poster;
+        this.enabled = enabled;
     }
 
     @Override
     public String toString() {
         return "FavoritesMovieDB{" +
-                "num=" + num +
-                ", name='" + name + '\'' +
+                "name='" + name + '\'' +
+                ", release='" + release + '\'' +
+                ", poster='" + poster + '\'' +
+                ", enabled=" + enabled +
                 '}';
-    }
-
-    public String getNum() {
-        return num;
     }
 
     public String getName() {
@@ -47,5 +45,11 @@ public class FavoritesMovieDB extends SugarRecord {
         return poster;
     }
 
+    public boolean isEnabled() {
+        return enabled;
+    }
 
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
 }

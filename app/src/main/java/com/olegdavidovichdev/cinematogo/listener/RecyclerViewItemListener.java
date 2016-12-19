@@ -16,16 +16,11 @@ import com.olegdavidovichdev.cinematogo.model.Movie;
 
 import java.util.List;
 
-/**
- * Created by Oleg on 27.11.2016.
- */
 
 public class RecyclerViewItemListener implements View.OnClickListener, View.OnLongClickListener {
 
     private RecyclerView recyclerView;
     private List<Movie> movies;
-
-    int counter;
 
 
     public RecyclerViewItemListener(RecyclerView recyclerView, List<Movie> movies) {
@@ -52,10 +47,8 @@ public class RecyclerViewItemListener implements View.OnClickListener, View.OnLo
     @Override
     public boolean onLongClick(final View v) {
 
-
         String[] items = v.getResources().getStringArray(R.array.long_click_dialog_items);
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(v.getContext(), R.layout.long_click_dialog_item, items);
-
 
         Log.d("MainActivity", "onLongClick");
         int count = recyclerView.getChildLayoutPosition(v);
@@ -70,7 +63,7 @@ public class RecyclerViewItemListener implements View.OnClickListener, View.OnLo
                 switch (which) {
                     case 0:
 
-                        FavoritesMovieDB f = new FavoritesMovieDB(String.valueOf(m.getId()), m.getTitle(), m.getReleaseDate(), m.getPosterPath());
+                        FavoritesMovieDB f = new FavoritesMovieDB(m.getTitle(), m.getReleaseDate(), m.getPosterPath(), false);
 
                         List<FavoritesMovieDB> fullList = FavoritesMovieDB.listAll(FavoritesMovieDB.class);
                         Boolean isSameItem = false;
@@ -95,13 +88,10 @@ public class RecyclerViewItemListener implements View.OnClickListener, View.OnLo
                                     })
                                     .show();
                         }
-
-
                 }
             }
         });
         ad.create().show();
         return true;
     }
-
 }

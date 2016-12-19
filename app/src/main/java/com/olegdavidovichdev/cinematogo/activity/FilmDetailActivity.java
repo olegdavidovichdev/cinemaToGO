@@ -24,9 +24,6 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-/**
- * Created by Oleg on 27.11.2016.
- */
 
 public class FilmDetailActivity extends AppCompatActivity implements View.OnClickListener{
 
@@ -37,7 +34,6 @@ public class FilmDetailActivity extends AppCompatActivity implements View.OnClic
     private static final String APP_PREFERENCES = "app_preferences";
     private static final String APP_PREFERENCES_BASE_URL_IMAGES = "baseUrlImages";
     private String baseUrlImages;
-
 
     private static String posterId;
 
@@ -78,14 +74,11 @@ public class FilmDetailActivity extends AppCompatActivity implements View.OnClic
         pd.setMessage(getString(R.string.downloading_data));
         pd.show();
 
-
         final int id = getIntent().getIntExtra("id", -1);
-
 
         sp = getSharedPreferences(APP_PREFERENCES, MODE_PRIVATE);
 
         baseUrlImages = sp.getString(APP_PREFERENCES_BASE_URL_IMAGES, "");
-
 
         Log.d(TAG, baseUrlImages + " " + currentLanguage);
 
@@ -95,7 +88,7 @@ public class FilmDetailActivity extends AppCompatActivity implements View.OnClic
         call.enqueue(new Callback<Movie>() {
             @Override
             public void onResponse(Call<Movie> call, Response<Movie> response) {
-                Log.d(TAG, response.body().getPosterPath());
+                Log.d(TAG, response.body().getPosterPath() + "");
 
                 posterId = response.body().getPosterPath();
 
