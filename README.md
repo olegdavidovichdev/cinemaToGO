@@ -20,5 +20,5 @@ Android 4.0+ (API 14+)
 
 ## Screenshots:
 ![Collage 1] (/screenshots/collage1.png)
------------------------------------------
+
 ![Collage 2] (/screenshots/collage2.png)
