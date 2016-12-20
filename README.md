@@ -15,6 +15,9 @@ CinemaToGO is a simple application which helps to find upcoming movies.
 4. The app automatically receives actual API configuration.
 5. Special screen for modify the app settings.
 
+## Requirements:
+Android 4.0+ (API 14+)
+
 ## Screenshots:
 ![Main Screen English] (/screenshots/1.png)
 ![Main Screen Russian] (/screenshots/2.png)
@@ -22,3 +25,5 @@ CinemaToGO is a simple application which helps to find upcoming movies.
 ![Settings Screen] (/screenshots/4.png)
 ![Notification example] (/screenshots/5.png)
 ![Movie Detail Screen] (/screenshots/6.png)
+
+![Collage 1] (/screenshots/collage1.png)
