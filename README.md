@@ -19,6 +19,6 @@ CinemaToGO is a simple application which helps to find upcoming movies.
 Android 4.0+ (API 14+)
 
 ## Screenshots:
-![Collage 1] (/screenshots/collage1.png?raw=true "Collage")
+![Collage 1] (/screenshots/collage1.png?raw=true "Collage 1")
 
-![Collage 2] (/screenshots/collage2.png?raw=true "Collage")
+![Collage 2] (/screenshots/collage2.png?raw=true "Collage 2")
