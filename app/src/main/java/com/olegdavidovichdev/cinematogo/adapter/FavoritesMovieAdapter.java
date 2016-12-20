@@ -63,7 +63,8 @@ public class FavoritesMovieAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return list.size();
+        if (list == null) return 0;
+        else return list.size();
     }
 
     @Override
@@ -96,76 +97,78 @@ public class FavoritesMovieAdapter extends BaseAdapter {
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
-        final List <FavoritesMovieDB> mov = FavoritesMovieDB.find(FavoritesMovieDB.class, "name = ?", list.get(position).getName());
-        final FavoritesMovieDB movie = mov.get(0);
+        if (!FavoritesMovieDB.listAll(FavoritesMovieDB.class).isEmpty()) {
 
-        viewHolder.tvTitle.setText(movie.getName());
-        viewHolder.tvRelease.setText(movie.getRelease());
-        viewHolder.pb.setVisibility(View.VISIBLE);
-        viewHolder.sw.setTag(position);
+            final List <FavoritesMovieDB> mov = FavoritesMovieDB.find(FavoritesMovieDB.class, "name = ?", list.get(position).getName());
+            final FavoritesMovieDB movie = mov.get(0);
 
-        if (movie.isEnabled()) {
-            viewHolder.sw.setChecked(true);
-        }
+            viewHolder.tvTitle.setText(movie.getName());
+            viewHolder.tvRelease.setText(movie.getRelease());
+            viewHolder.pb.setVisibility(View.VISIBLE);
+            viewHolder.sw.setTag(position);
 
-        String imageUrl = sp.getString(APP_PREFERENCES_BASE_URL_IMAGES, null);
-        String size = "w154";
-        final String posterPath = movie.getPoster();
-        Picasso.with(ctx)
-                .load(imageUrl + size + posterPath)
-                .into(viewHolder.image, new Callback() {
-                    @Override
-                    public void onSuccess() {
-                        viewHolder.pb.setVisibility(View.INVISIBLE);
-                    }
-
-                    @Override
-                    public void onError() {
-                        viewHolder.pb.setVisibility(View.INVISIBLE);
-                        viewHolder.placeholder.setVisibility(View.VISIBLE);
-                    }
-                });
-
-        viewHolder.bin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(final View v) {
-                final AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
-                builder.setMessage("Are you sure you want to delete '" + movie.getName() + "' from Favorites?");
-                builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                        Intent intent = new Intent(ctx, NotificationReceiver.class);
-                        PendingIntent pendingIntent = PendingIntent.getBroadcast(ctx,
-                                position, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-                        AlarmManager am = (AlarmManager) ctx.getSystemService(Context.ALARM_SERVICE);
-                        am.cancel(pendingIntent);
-
-                        movie.delete();
-                        Integer index = (Integer) viewHolder.sw.getTag();
-                        list.remove(index.intValue());
-
-                        ListView lv = ((FavoritesMovieActivity) ctx).getListFavFilm();
-                        lv.setAdapter(FavoritesMovieAdapter.this);
-
-                    }
-                });
-                builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {}
-                });
-                builder.create().show();
+            if (movie.isEnabled()) {
+                viewHolder.sw.setChecked(true);
             }
-        });
 
-        viewHolder.sw.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
+            String imageUrl = sp.getString(APP_PREFERENCES_BASE_URL_IMAGES, null);
+            String size = "w154";
+            final String posterPath = movie.getPoster();
+            Picasso.with(ctx)
+                    .load(imageUrl + size + posterPath)
+                    .into(viewHolder.image, new Callback() {
+                        @Override
+                        public void onSuccess() {
+                            viewHolder.pb.setVisibility(View.INVISIBLE);
+                        }
 
-                    Calendar now = Calendar.getInstance();
-                    now.add(Calendar.SECOND, 15);
+                        @Override
+                        public void onError() {
+                            viewHolder.pb.setVisibility(View.INVISIBLE);
+                            viewHolder.placeholder.setVisibility(View.VISIBLE);
+                        }
+                    });
+
+            viewHolder.bin.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(final View v) {
+                    final AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
+                    builder.setMessage("Are you sure you want to delete '" + movie.getName() + "' from Favorites?");
+                    builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                            Intent intent = new Intent(ctx, NotificationReceiver.class);
+                            PendingIntent pendingIntent = PendingIntent.getBroadcast(ctx,
+                                    position, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+                            AlarmManager am = (AlarmManager) ctx.getSystemService(Context.ALARM_SERVICE);
+                            am.cancel(pendingIntent);
+
+                            movie.delete();
+                            Integer index = (Integer) viewHolder.sw.getTag();
+                            list.remove(index.intValue());
+
+                            ListView lv = ((FavoritesMovieActivity) ctx).getListFavFilm();
+                            lv.setAdapter(FavoritesMovieAdapter.this);
+
+                        }
+                    });
+                    builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {}
+                    });
+                    builder.create().show();
+                }
+            });
+
+            viewHolder.sw.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    if (isChecked) {
+
+                        Calendar now = Calendar.getInstance();
+                        now.add(Calendar.SECOND, 15);
 
                     /*String release = m.getRelease();
 
@@ -181,36 +184,37 @@ public class FavoritesMovieAdapter extends BaseAdapter {
 
                        Log.d(TAG, targetDate.toString());*/
 
-                    Intent intent = new Intent(ctx, NotificationReceiver.class);
-                    intent.putExtra(EXTRA_KEY, 2);
-                    intent.putExtra("film_name", movie.getName());
-                    intent.putExtra("film_release", movie.getRelease());
-                    intent.putExtra("film_poster", movie.getPoster());
-                    intent.putExtra("notification_id", position);
+                        Intent intent = new Intent(ctx, NotificationReceiver.class);
+                        intent.putExtra(EXTRA_KEY, 2);
+                        intent.putExtra("film_name", movie.getName());
+                        intent.putExtra("film_release", movie.getRelease());
+                        intent.putExtra("film_poster", movie.getPoster());
+                        intent.putExtra("notification_id", position);
 
-                    PendingIntent pendingIntent = PendingIntent.getBroadcast(ctx,
-                            position, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                        PendingIntent pendingIntent = PendingIntent.getBroadcast(ctx,
+                                position, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-                    AlarmManager am = (AlarmManager) ctx.getSystemService(Context.ALARM_SERVICE);
-                    am.set(AlarmManager.RTC_WAKEUP, now.getTimeInMillis(), pendingIntent);
+                        AlarmManager am = (AlarmManager) ctx.getSystemService(Context.ALARM_SERVICE);
+                        am.set(AlarmManager.RTC_WAKEUP, now.getTimeInMillis(), pendingIntent);
 
-                    movie.setEnabled(true);
-                    movie.save();
+                        movie.setEnabled(true);
+                        movie.save();
 
-                } else {
+                    } else {
 
-                    Intent intent = new Intent(ctx, NotificationReceiver.class);
-                    PendingIntent pendingIntent = PendingIntent.getBroadcast(ctx,
-                            position, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                        Intent intent = new Intent(ctx, NotificationReceiver.class);
+                        PendingIntent pendingIntent = PendingIntent.getBroadcast(ctx,
+                                position, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-                    AlarmManager am = (AlarmManager) ctx.getSystemService(Context.ALARM_SERVICE);
-                    am.cancel(pendingIntent);
+                        AlarmManager am = (AlarmManager) ctx.getSystemService(Context.ALARM_SERVICE);
+                        am.cancel(pendingIntent);
 
-                    movie.setEnabled(false);
-                    movie.save();
+                        movie.setEnabled(false);
+                        movie.save();
+                    }
                 }
-            }
-        });
+            });
+        }
         return convertView;
     }
 }

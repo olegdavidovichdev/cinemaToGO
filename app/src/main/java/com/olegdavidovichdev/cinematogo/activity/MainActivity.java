@@ -141,7 +141,7 @@ public class MainActivity extends AppCompatActivity {
             pb.setVisibility(View.INVISIBLE);
         }
 
-        Log.d(TAG, "language =" + language);
+        Log.d(TAG, "language = " + language);
 
         // language
         if (spa.contains(SETTINGS_PREFERENCES_LANGUAGE) && language == null) {

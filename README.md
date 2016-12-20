@@ -1,6 +1,9 @@
-# CinemaToGO alpha 1.2.1
+# CinemaToGO alpha 1.2.2
 
 CinemaToGO is a simple application which helps to find upcoming movies.
+
+### *Added in 1.2.2*:
+- Added a search function in the Favorites list
 
 ### *Fixed in 1.2.1*:
 - Fixed switch bug after delete item in the Favorites list 
